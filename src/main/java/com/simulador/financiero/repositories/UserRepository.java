@@ -7,10 +7,12 @@ import org.springframework.stereotype.Repository;
 
 import com.simulador.financiero.entities.UserEntity;
 
-
 @Repository
-public interface UserRepository extends JpaRepository<UserEntity, Long>{
+public interface UserRepository extends JpaRepository<UserEntity, Long> {
+
+    boolean existsByCurp(String curp);
+
     Optional<UserEntity> findByCurp(String curp);
 
-
+    boolean existsByEmail(String email);
 }
