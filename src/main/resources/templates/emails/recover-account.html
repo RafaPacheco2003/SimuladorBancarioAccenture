@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Recupera tu cuenta</title>
+</head>
+
+<body style="margin:0; padding:0; background-color:#f3f2fb; font-family: Arial, Helvetica, sans-serif;">
+
+    <div style="display:none; max-height:0; overflow:hidden; opacity:0;">
+        Usa el código a continuación para recuperar el acceso a tu cuenta.
+    </div>
+
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0"
+        style="background-color:#f3f2fb; padding:32px 16px;">
+        <tr>
+            <td align="center">
+                <table role="presentation" width="600" cellpadding="0" cellspacing="0"
+                    style="max-width:600px; width:100%; background-color:#ffffff; border-radius:16px; overflow:hidden; box-shadow:0 4px 12px rgba(76,29,149,0.08);">
+
+                    <tr>
+                        <td style="padding:28px 40px; border-bottom:1px solid #ece9f7;">
+                            <span style="font-size:20px; font-weight:700; color:#1a1a2e;">Nova</span>
+                            <span style="font-size:20px; font-weight:400; color:#6d28d9;">Bank</span>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td style="background-color:#5b21b6; padding:36px 40px;">
+                            <p
+                                style="margin:0 0 6px 0; font-size:13px; letter-spacing:0.06em; text-transform:uppercase; color:#d8ccf5;">
+                                Recuperación de cuenta
+                            </p>
+                            <h1 style="margin:0; font-size:26px; line-height:1.3; color:#ffffff; font-weight:700;">
+                                Hola, <span th:text="${recipientName}"></span>
+                            </h1>
+                            <p style="margin:12px 0 0 0; font-size:15px; color:#e6defc; line-height:1.5;">
+                                Recibimos una solicitud para recuperar el acceso a tu correo asociado a tu cuenta de
+                                Nova Bank.
+                            </p>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td style="padding:36px 40px;">
+                            <p style="margin:0 0 20px 0; font-size:15px; color:#3f3f4e; line-height:1.6;">
+                                Usa el siguiente código de verificación para continuar con el proceso.
+                                Este código es válido por tiempo limitado, así que complétalo lo antes posible.
+                            </p>
+
+                            <table role="presentation" width="100%" cellpadding="0" cellspacing="0"
+                                style="margin:0 0 24px 0;">
+                                <tr>
+                                    <td align="center"
+                                        style="background-color:#f3f2fb; border:1px solid #ddd4f7; border-radius:12px; padding:22px;">
+                                        <p
+                                            style="margin:0 0 6px 0; font-size:12px; letter-spacing:0.08em; text-transform:uppercase; color:#7c6aae;">
+                                            Tu código
+                                        </p>
+                                        <p style="margin:0; font-size:28px; font-weight:700; letter-spacing:0.15em; color:#5b21b6; font-family: 'Courier New', monospace;"
+                                            th:text="${token}">
+                                        </p>
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <table role="presentation" width="100%" cellpadding="0" cellspacing="0"
+                                style="margin:0 0 28px 0;">
+                                <tr>
+                                    <td align="center">
+                                        <a th:href="@{${recoveryUrl}(token=${token})}" href="#"
+                                            style="display:inline-block; background-color:#5b21b6; color:#ffffff; text-decoration:none; font-size:15px; font-weight:600; padding:14px 32px; border-radius:10px;">
+                                            Recuperar mi cuenta
+                                        </a>
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <p style="margin:0; font-size:13px; color:#8a8a9a; line-height:1.6;">
+                                Si tú no solicitaste este cambio, puedes ignorar este mensaje de forma segura;
+                                tu cuenta seguirá protegida y no se realizará ninguna modificación.
+                            </p>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+
+</body>
+
+</html>
