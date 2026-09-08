@@ -19,14 +19,48 @@ import lombok.AllArgsConstructor;
 
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+
+import com.simulador.financiero.DTOs.request.LoginRequest;
+import com.simulador.financiero.DTOs.response.LoginResponse;
+import com.simulador.financiero.entities.UserEntity;
+import com.simulador.financiero.entities.UserResponse;
+import com.simulador.financiero.services.UserService;
+
 
 @RestController
-@RequestMapping("api/v1/auth")
+@RequestMapping("/api/v1/auth")
 @AllArgsConstructor
 @Tag(name = "Auth", description = "Autenticación y recuperación de cuenta")
 public class AuthController {
-
     private final AuthService authService;
+    private final UserService userService;
+
+    @PostMapping("/register")
+    public ResponseEntity<UserResponse> createUser(
+            @Valid @RequestBody UserEntity user) {
+
+        UserEntity usuarioCreado = userService.createUser(user);
+
+        UserResponse response = new UserResponse(
+                usuarioCreado.getId(),
+                usuarioCreado.getFullName(),
+                usuarioCreado.getEmail(),
+                usuarioCreado.getStatus().name(),
+                usuarioCreado.getCreatedAt());
+
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(response);
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest request) {
+        LoginResponse loginResponse = authService.login(request);
+        return ResponseEntity.ok(loginResponse);
+
+    }
 
     @PostMapping("reset-password")
     @Operation(summary = "Cambiar contraseña con clave temporal", description = "Valida la clave temporal y actualiza la contraseña del usuario.")

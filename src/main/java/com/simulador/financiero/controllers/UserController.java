@@ -15,13 +15,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.simulador.financiero.entities.UserEntity;
 import com.simulador.financiero.entities.UserResponse;
-import com.simulador.financiero.repositories.UserRepository;
 import com.simulador.financiero.services.UserService;
 
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/api/v1/auth")
+// @RequestMapping("/api/v1/auth")
+@RequestMapping ("/api/v1/users")
 public class UserController {
 
     private final UserService userService;
@@ -34,7 +34,7 @@ public class UserController {
     public List<UserResponse> getAllUsers() {
 
         return userService.getAllUsers()
-                .stream()
+                .stream() 
                 .map(user -> new UserResponse(
                         user.getId(),
                         user.getFullName(),
@@ -63,29 +63,9 @@ public class UserController {
         );
     }
 
-    @PostMapping("/register")
-    public ResponseEntity<UserResponse> createUser(
-            @Valid @RequestBody UserEntity user) {
-
-        UserEntity usuarioCreado = userService.createUser(user);
-
-        UserResponse response = new UserResponse(
-                usuarioCreado.getId(),
-                usuarioCreado.getFullName(),
-                usuarioCreado.getEmail(),
-                usuarioCreado.getStatus().name(),
-                usuarioCreado.getCreatedAt()
-        );
-
-        return ResponseEntity
-                .status(HttpStatus.CREATED)
-                .body(response);
-    }
 
     @PutMapping("/{id}")
-    public ResponseEntity<UserResponse> updateUser(
-            @PathVariable Long id,
-            @RequestBody UserEntity user) {
+    public ResponseEntity<UserResponse> updateUser(@PathVariable Long id, @RequestBody UserEntity user) {
 
         UserEntity usuarioActualizado =
                 userService.updateUser(id, user);
@@ -104,7 +84,6 @@ public class UserController {
 
         return ResponseEntity.ok(response);
     }
-
     @DeleteMapping("/{id}")
     public void deleteUser(@PathVariable Long id) {
         userService.deleteUser(id);

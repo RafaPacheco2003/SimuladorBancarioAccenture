@@ -13,10 +13,19 @@ import com.simulador.financiero.validators.TokenValidator;
 
 import lombok.AllArgsConstructor;
 
-@Service
-@AllArgsConstructor
-public class AuthService {
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 
+import com.simulador.financiero.DTOs.request.LoginRequest;
+import com.simulador.financiero.DTOs.response.LoginResponse;
+import com.simulador.financiero.repositories.UserRepository;
+
+@Service
+@AllArgsConstructor 
+public class AuthService {
+    private final JwtService jwtService;
+    private final AuthenticationManager authenticationManager;
+    private final UserRepository userRepository;
     private final UserTokenRepository userTokenRepository;
     private final PasswordEncoder passwordEncoder;
 
@@ -34,4 +43,15 @@ public class AuthService {
         user.setPassword(passwordEncoder.encode(newPassword));
     }
 
+    public LoginResponse login(LoginRequest request) {
+        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
+                request.getEmail(),
+                request.getPassword()));
+
+        var user = userRepository.findByEmail(request.getEmail());
+
+        String token = jwtService.generateToken(user.get());
+        return new LoginResponse(token, jwtService.getExpirationTime());
+
+    }
 }
