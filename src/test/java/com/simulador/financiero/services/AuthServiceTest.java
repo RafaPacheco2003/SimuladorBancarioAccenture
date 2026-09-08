@@ -1,6 +1,8 @@
 package com.simulador.financiero.services;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 import java.util.Optional;
@@ -11,6 +13,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 
 import com.simulador.financiero.DTOs.request.LoginRequest;
 import com.simulador.financiero.DTOs.response.LoginResponse;
@@ -54,5 +57,29 @@ public class AuthServiceTest {
 
         assertEquals(esperado.getToken(), resultado.getToken());
         assertEquals(esperado.getExpiraEnSegundos(), resultado.getExpiraEnSegundos());
+    }
+
+    @Test
+    public void deberiaRechazarLoginCuandoPasswordSeaIncorrecta() {
+        LoginRequest request = new LoginRequest();
+        request.setEmail("luis.ake111@gmail.com");
+        request.setPassword("wrongpassword");
+
+        when(authenticationManager.authenticate(any()))
+            .thenThrow(new BadCredentialsException("Contraseña incorrecta"));
+
+        assertThrows(BadCredentialsException.class, () -> authService.login(request));
+    }
+
+    @Test
+    public void deberiaRechazarLoginCuandoCorreoNoExista() {
+        LoginRequest request = new LoginRequest();
+        request.setEmail("nonexistent@gmail.com");
+        request.setPassword("123456");
+
+        when(authenticationManager.authenticate(any()))
+            .thenThrow(new BadCredentialsException("Credenciales inválidas"));
+
+        assertThrows(BadCredentialsException.class, () -> authService.login(request));
     }
 }
