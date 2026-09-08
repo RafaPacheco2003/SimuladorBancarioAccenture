@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.simulador.financiero.entities.UserEntity;
 import com.simulador.financiero.entities.UserResponse;
-import com.simulador.financiero.repositories.UserRepository;
 import com.simulador.financiero.services.UserService;
 
 import jakarta.validation.Valid;
@@ -34,7 +33,7 @@ public class UserController {
     public List<UserResponse> getAllUsers() {
 
         return userService.getAllUsers()
-                .stream()
+                .stream() 
                 .map(user -> new UserResponse(
                         user.getId(),
                         user.getFullName(),
@@ -83,9 +82,7 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<UserResponse> updateUser(
-            @PathVariable Long id,
-            @RequestBody UserEntity user) {
+    public ResponseEntity<UserResponse> updateUser(@PathVariable Long id, @RequestBody UserEntity user) {
 
         UserEntity usuarioActualizado =
                 userService.updateUser(id, user);
@@ -104,7 +101,6 @@ public class UserController {
 
         return ResponseEntity.ok(response);
     }
-
     @DeleteMapping("/{id}")
     public void deleteUser(@PathVariable Long id) {
         userService.deleteUser(id);
