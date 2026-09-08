@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -54,5 +55,10 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(500).body(errorDetail);
     }
 
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<ErrorDetail> handleBadCredentials(BadCredentialsException ex, HttpServletRequest request) {
+        ErrorDetail errorDetail = new ErrorDetail(LocalDateTime.now(), 401, "Unauthorized", "Correo o contraseña incorrectos", request.getRequestURI());
+        return ResponseEntity.status(401).body(errorDetail);
+    }
 
 }
