@@ -20,7 +20,8 @@ import com.simulador.financiero.services.UserService;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/api/v1/auth")
+// @RequestMapping("/api/v1/auth")
+@RequestMapping ("/api/v1/users")
 public class UserController {
 
     private final UserService userService;
@@ -62,24 +63,6 @@ public class UserController {
         );
     }
 
-    @PostMapping("/register")
-    public ResponseEntity<UserResponse> createUser(
-            @Valid @RequestBody UserEntity user) {
-
-        UserEntity usuarioCreado = userService.createUser(user);
-
-        UserResponse response = new UserResponse(
-                usuarioCreado.getId(),
-                usuarioCreado.getFullName(),
-                usuarioCreado.getEmail(),
-                usuarioCreado.getStatus().name(),
-                usuarioCreado.getCreatedAt()
-        );
-
-        return ResponseEntity
-                .status(HttpStatus.CREATED)
-                .body(response);
-    }
 
     @PutMapping("/{id}")
     public ResponseEntity<UserResponse> updateUser(@PathVariable Long id, @RequestBody UserEntity user) {
