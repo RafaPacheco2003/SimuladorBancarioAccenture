@@ -1,16 +1,15 @@
 package com.simulador.financiero.entities;
 
 import java.time.LocalDateTime;
-
+//
 public class UserResponse {
-
 
 private Long id;
 private String fullName;
 private String email;
 private String status;
 private LocalDateTime createdAt;
-
+//estos son los datos que retorna al usuario cuando solicite cualquier peticion
 public UserResponse(
         Long id,
         String fullName,
