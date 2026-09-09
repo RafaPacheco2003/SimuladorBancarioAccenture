@@ -7,6 +7,11 @@ import static org.mockito.Mockito.when;
 
 import java.util.Optional;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.verify;
+import java.time.LocalDateTime;
+
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -19,6 +24,12 @@ import com.simulador.financiero.DTOs.request.LoginRequest;
 import com.simulador.financiero.DTOs.response.LoginResponse;
 import com.simulador.financiero.entities.UserEntity;
 import com.simulador.financiero.repositories.UserRepository;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
+import com.simulador.financiero.Exceptions.BadRequestException;
+import com.simulador.financiero.constants.ConfigurationConstants;
+import com.simulador.financiero.entities.TempTockenEntity;
+import com.simulador.financiero.repositories.TempTokenRepository;
 
 @ExtendWith(MockitoExtension.class)
 public class AuthServiceTest {
@@ -32,8 +43,22 @@ public class AuthServiceTest {
     @Mock
     private AuthenticationManager authenticationManager;
 
+    @Mock
+    private TempTokenRepository tempTokenRepository;
+
+    @Mock
+    private PasswordEncoder passwordEncoder;
+
     @InjectMocks
     private AuthService authService;
+      
+    private UserEntity user;
+
+    @BeforeEach
+    void setUp() {
+        this.user = UserEntity.builder().id(1L).fullName("Juan Pérez").email("juan@example.com")
+                .password("oldPassword123").build();
+    }
 
     @Test
     public void deberiaEntregarTokenCuandoCredencialesSeanCorrectas() {
@@ -82,4 +107,48 @@ public class AuthServiceTest {
 
         assertThrows(BadCredentialsException.class, () -> authService.login(request));
     }
+
+    @Test
+    void mustChangePasswordWhenTheTokenIsValid() {
+        String token = "valid-token-123";
+        String newPassword = "newPassword456";
+        String encodedPassword = "encodedPassword789";
+
+        TempTockenEntity tempToken = TempTockenEntity.builder().id(1L).token(token).user(user).build();
+
+        when(tempTokenRepository.findByToken(token)).thenReturn(Optional.of(tempToken));
+        when(passwordEncoder.encode(newPassword)).thenReturn(encodedPassword);
+
+        authService.resetPassword(newPassword, token);
+
+        assertThat(user.getPassword()).isEqualTo(encodedPassword);
+        verify(tempTokenRepository).delete(tempToken);
+        verify(userRepository).save(user);
+    }
+
+    @Test
+    void mustThrowExceptionWhenTheTokenHasExpired() {
+        String token = "invalid-token-123";
+        String newPassword = "newPassword";
+
+        TempTockenEntity tempToken = TempTockenEntity.builder().id(1L).token(token).user(user)
+                .createdAt(LocalDateTime.now().minusMinutes((long) ConfigurationConstants.TOKEN_EXPIRATION_MINUTES + 3L))
+                .build();
+
+        when(tempTokenRepository.findByToken(token)).thenReturn(Optional.of(tempToken));
+
+        assertThrows(BadRequestException.class, () -> authService.resetPassword(newPassword, token));
+        verify(tempTokenRepository).delete(tempToken);
+    }
+
+    @Test
+    void mustThrowExceptionWhenTheTokenDoesNotExist() {
+        String token = "non-existent-token";
+        String newPassword = "newPassword";
+
+        when(tempTokenRepository.findByToken(token)).thenReturn(Optional.empty());
+
+        assertThrows(BadRequestException.class, () -> authService.resetPassword(newPassword, token));
+    }
+
 }
