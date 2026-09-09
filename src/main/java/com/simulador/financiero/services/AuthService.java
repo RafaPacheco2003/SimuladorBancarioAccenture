@@ -1,15 +1,16 @@
 package com.simulador.financiero.services;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.simulador.financiero.Exceptions.BadRequestException;
-import com.simulador.financiero.entities.TokenStatus;
+import com.simulador.financiero.constants.ExceptionMessageConstants;
 import com.simulador.financiero.entities.UserEntity;
-import com.simulador.financiero.entities.UserTokenEntity;
-import com.simulador.financiero.repositories.UserTokenRepository;
-import com.simulador.financiero.validators.TokenValidator;
+import com.simulador.financiero.entities.TempTockenEntity;
+import com.simulador.financiero.repositories.UserRepository;
+import com.simulador.financiero.repositories.TempTokenRepository;
+import com.simulador.financiero.validators.ResetTokenValidator;
 
 import lombok.AllArgsConstructor;
 
@@ -18,7 +19,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 
 import com.simulador.financiero.DTOs.request.LoginRequest;
 import com.simulador.financiero.DTOs.response.LoginResponse;
-import com.simulador.financiero.repositories.UserRepository;
 
 @Service
 @AllArgsConstructor 
@@ -26,21 +26,25 @@ public class AuthService {
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
     private final UserRepository userRepository;
-    private final UserTokenRepository userTokenRepository;
+    private final TempTokenRepository tempTokenRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Transactional
     public void resetPassword(String newPassword, String temporalKey) {
 
-        UserTokenEntity userToken = userTokenRepository.findByToken(temporalKey)
-                .orElseThrow(() -> new BadRequestException(TokenValidator.INVALID_TOKEN_MESSAGE));
+        TempTockenEntity tempToken = tempTokenRepository.findByToken(temporalKey)
+                .orElseThrow(() -> new BadRequestException(ExceptionMessageConstants.TOKEN_INVALID_OR_EXPIRED));
 
-        TokenValidator.validate(userToken);
+        if (ResetTokenValidator.isExpired(tempToken.getCreatedAt())){
+            tempTokenRepository.delete(tempToken);
+            throw new BadRequestException(ExceptionMessageConstants.TOKEN_INVALID_OR_EXPIRED);
+        }
 
-        UserEntity user = userToken.getUser();
+        UserEntity user = tempToken.getUser();
 
-        userToken.setStatus(TokenStatus.USED);
+        tempTokenRepository.delete(tempToken);
         user.setPassword(passwordEncoder.encode(newPassword));
+        userRepository.save(user);
     }
 
     public LoginResponse login(LoginRequest request) {

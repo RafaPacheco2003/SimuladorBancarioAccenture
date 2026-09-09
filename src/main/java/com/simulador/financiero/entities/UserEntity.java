@@ -14,8 +14,12 @@ import jakarta.persistence.PrePersist;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 
 @Entity
+@Builder 
+@AllArgsConstructor 
 public class UserEntity {
 
     @Id
