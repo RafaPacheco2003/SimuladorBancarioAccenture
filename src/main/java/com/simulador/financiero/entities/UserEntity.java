@@ -2,7 +2,6 @@ package com.simulador.financiero.entities;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -14,29 +13,31 @@ import jakarta.persistence.PrePersist;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
+@Getter 
+@AllArgsConstructor 
+@Setter 
+@NoArgsConstructor 
 public class UserEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank(message = "El nombre es obligatorio")
     @Column(name = "full_name", nullable = false)
     private String fullName;
 
-    @NotBlank(message = "El CURP es obligatorio")
     @Column(nullable = false, unique = true)
     private String curp;
 
-    @NotBlank(message = "El email es obligatorio")
-    @Email(message = "El email debe tener un formato válido")
     @Column(nullable = false, unique = true)
     private String email;
 
-    @NotBlank(message = "La contraseña es obligatoria")
-    @Size(min = 8, message = "La contraseña debe tener mínimo 8 caracteres")
     @Column(nullable = false)
     private String password;
 
@@ -51,6 +52,19 @@ public class UserEntity {
 
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
+
+
+    public UserEntity(@NotBlank(message = "El nombre es obligatorio") String fullName,
+        @NotBlank(message = "El CURP es obligatorio") String curp,
+        @NotBlank(message = "El email es obligatorio") @Email(message = "El email debe tener un formato válido") String email,
+        @NotBlank(message = "La contraseña es obligatoria") @Size(min = 8, message = "La contraseña debe tener mínimo 8 caracteres") String password,
+        String phone) {
+        this.fullName = fullName;
+        this.curp = curp;
+        this.email = email;
+        this.password = password;
+        this.phone = phone;
+    }
 
     @PrePersist
     protected void onCreate() {
@@ -68,78 +82,6 @@ public class UserEntity {
         }
     }
 
-    public UserEntity() {
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getFullName() {
-        return fullName;
-    }
-
-    public void setFullName(String fullName) {
-        this.fullName = fullName;
-    }
-
-    public String getCurp() {
-        return curp;
-    }
-
-    public void setCurp(String curp) {
-        this.curp = curp;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getPhone() {
-        return phone;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
-
-    public BigDecimal getSaldo() {
-        return saldo;
-    }
-
-    public void setSaldo(BigDecimal saldo) {
-        this.saldo = saldo;
-    }
-
-    public UserStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(UserStatus status) {
-        this.status = status;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
+    
+    
 }

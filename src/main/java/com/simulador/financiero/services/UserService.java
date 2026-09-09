@@ -19,29 +19,9 @@ public class UserService {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
     }
-
-    // CREATE
+    //me quede en la parte del service mapper, createuserrequest y entityuser
     public UserEntity createUser(UserEntity user) {
-
-        // Verificar CURP duplicado
-        if (userRepository.existsByCurp(user.getCurp())) {
-            throw new IllegalArgumentException("El usuario ya existe");
-        }
-
-        // Verificar email duplicado
-        if (userRepository.existsByEmail(user.getEmail())) {
-            throw new IllegalArgumentException("El usuario ya existe");
-        }
-
-        // Validar contraseña
-        if (user.getPassword() == null ||
-                user.getPassword().length() < 8) {
-
-            throw new IllegalArgumentException(
-                    "La contraseña debe tener mínimo 8 caracteres"
-            );
-        }
-
+        
         // Cifrar contraseña
         user.setPassword(
                 passwordEncoder.encode(user.getPassword())
