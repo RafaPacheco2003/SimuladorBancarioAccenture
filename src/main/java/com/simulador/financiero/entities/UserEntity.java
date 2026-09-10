@@ -2,6 +2,9 @@ package com.simulador.financiero.entities;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Set;
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -9,6 +12,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.PrePersist;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -81,6 +85,9 @@ public class UserEntity {
             saldo = BigDecimal.ZERO;
         }
     }
+
+    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL)
+    private Set<AccountEntity> cuentas;
 
     
     
