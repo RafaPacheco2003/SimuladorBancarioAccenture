@@ -9,6 +9,8 @@ import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.Properties;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -41,8 +43,8 @@ class SmtpEmailSenderTest {
     private SmtpEmailSender emailSender;
 
     private final AccountRecoveryEmail definition = new AccountRecoveryEmail();
-    private final AccountRecoveryData data =
-            new AccountRecoveryData("John", "https://app.simulador.com/recover", "tok-123");
+    private final AccountRecoveryData data = new AccountRecoveryData("John", "https://app.simulador.com/recover",
+            "tok-123");
 
     @BeforeEach
     void setUp() {
@@ -61,6 +63,7 @@ class SmtpEmailSenderTest {
         ArgumentCaptor<MimeMessage> captor = ArgumentCaptor.forClass(MimeMessage.class);
         verify(javaMailSender).send(captor.capture());
         MimeMessage sent = captor.getValue();
+        sent.saveChanges();
 
         assertThat(sent.getSubject()).isEqualTo(definition.subject(data));
         assertThat(sent.getFrom()[0].toString()).isEqualTo(FROM);
