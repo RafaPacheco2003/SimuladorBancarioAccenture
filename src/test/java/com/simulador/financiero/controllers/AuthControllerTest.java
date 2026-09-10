@@ -17,7 +17,7 @@ import com.simulador.financiero.DTOs.request.PasswordResetRequest;
 import com.simulador.financiero.Exceptions.BadRequestException;
 import com.simulador.financiero.constants.ExceptionMessageConstants;
 import com.simulador.financiero.services.AuthService;
-import com.simulador.financiero.services.UserService;
+import com.simulador.financiero.services.IUserService;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -37,7 +37,7 @@ public class AuthControllerTest {
     private AuthService authService;
 
     @MockBean
-    private UserService userService;
+    private IUserService userService;
 
     private final String RESET_PASSWORD_ENDPOINT = "/api/v1/auth/reset-password";
 
