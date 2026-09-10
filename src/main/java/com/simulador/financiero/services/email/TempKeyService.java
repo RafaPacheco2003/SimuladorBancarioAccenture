@@ -1,16 +1,14 @@
 package com.simulador.financiero.services.email;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.simulador.financiero.Exceptions.RequestDenied;
 import com.simulador.financiero.Exceptions.ResourceNotFoundException;
+import com.simulador.financiero.constants.ExceptionMessageConstants;
 import com.simulador.financiero.entities.TempTockenEntity;
 import com.simulador.financiero.entities.UserEntity;
 import com.simulador.financiero.repositories.TempTokenRepository;
@@ -18,110 +16,72 @@ import com.simulador.financiero.repositories.UserRepository;
 import com.simulador.financiero.services.email.catalog.AccountRecoveryData;
 import com.simulador.financiero.services.email.catalog.AccountRecoveryEmail;
 import com.simulador.financiero.utils.TockenGenerate;
-import com.simulador.financiero.validate.ValidateTemp;
-import com.simulador.financiero.Exceptions.RequestDenied;
+import com.simulador.financiero.validators.ResetTokenValidator;
 
 @Service
 public class TempKeyService {
 
-private final Map<String, LocalDateTime> lastRequest=new HashMap();
-private final EmailSender emailSender;
-private final UserRepository userRepository;
-private final TockenGenerate tockenGenerate;
-private final TempTokenRepository tempTokenRepository;
-private final ValidateTemp validateTemp;
-private final String RECOVERY_URL;
+    private final EmailSender emailSender;
+    private final UserRepository userRepository;
+    private final TockenGenerate tockenGenerate;
+    private final TempTokenRepository tempTokenRepository;
+    private final String RECOVERY_URL;
 
-public TempKeyService(
-        EmailSender emailSender,
-        UserRepository userRepository,
-        TockenGenerate tockenGenerate,
-        TempTokenRepository tempTokenRepository,
-        ValidateTemp validateTemp,
-        @Value("${app.mail.recovery.password.url}") String recoveryUrl) {
+    public TempKeyService(
+            EmailSender emailSender,
+            UserRepository userRepository,
+            TockenGenerate tockenGenerate,
+            TempTokenRepository tempTokenRepository,
+            @Value("${app.mail.recovery.password.url}") String recoveryUrl) {
 
-    this.emailSender = emailSender;
-    this.userRepository = userRepository;
-    this.tockenGenerate = tockenGenerate;
-    this.tempTokenRepository = tempTokenRepository;
-    this.validateTemp = validateTemp;
-    this.RECOVERY_URL = recoveryUrl;
-}
-
-public String generateTempKey(Integer tempkey) {
-    return tempkey.toString();
-}
-
-public boolean validateUser(String email) {
-
-    Optional<UserEntity> user = userRepository.findByEmail(email);
-
-    if (user.isEmpty()) {
-        throw new ResourceNotFoundException(
-                "Usuario no encontrado con el correo: " + email
-        );
+        this.emailSender = emailSender;
+        this.userRepository = userRepository;
+        this.tockenGenerate = tockenGenerate;
+        this.tempTokenRepository = tempTokenRepository;
+        this.RECOVERY_URL = recoveryUrl;
     }
 
-    String verification = tockenGenerate.generateTempKey();
+    @Transactional
+    public boolean validateUser(String email) {
 
-    LocalDateTime expiration =
-            LocalDateTime.now().plusMinutes(15);
+        UserEntity user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Usuario no encontrado con el correo: " + email));
 
-    TempTockenEntity tempToken = new TempTockenEntity();
+        Optional<TempTockenEntity> existing = tempTokenRepository.findByUser(user);
 
-    tempToken.setEmail(email);
-    tempToken.setToken(verification);
-    tempToken.setExpiration(expiration);
+        if (existing.isPresent()) {
+            TempTockenEntity previous = existing.get();
 
-    tempTokenRepository.save(tempToken);
+            if (ResetTokenValidator.isExpired(previous.getCreatedAt())) {
+                // Ya existe un token vencido: se elimina y se continúa para crear uno nuevo
+                tempTokenRepository.delete(previous);
+            } else if (ResetTokenValidator.isWithinCooldown(previous.getCreatedAt())) {
+                // Token aún vigente y solicitado hace menos de 1 minuto: se rechaza
+                throw new RequestDenied(ExceptionMessageConstants.TOO_MANY_TOKEN_REQUESTS);
+            } else {
+                // Token aún vigente pero fuera del enfriamiento: se reemplaza por uno nuevo
+                tempTokenRepository.delete(previous);
+            }
+        }
 
-    AccountRecoveryData data =
-            new AccountRecoveryData(
-                    user.get().getFullName(),
-                    RECOVERY_URL,
-                    verification
-            );
+        String verification = tockenGenerate.generateTempKey();
 
-    emailSender.send(
-            email,
-            new AccountRecoveryEmail(),
-            data
-    );
+        tempTokenRepository.save(TempTockenEntity.builder()
+                .token(verification)
+                .user(user)
+                .build());
 
-    return true;
-}
+        AccountRecoveryData data = new AccountRecoveryData(
+                user.getFullName(),
+                RECOVERY_URL,
+                verification);
 
-public boolean verifyTempKey(String email, String token) {
+        emailSender.send(
+                email,
+                new AccountRecoveryEmail(),
+                data);
 
-    Optional<TempTockenEntity> tempToken =
-            tempTokenRepository.findByEmailAndToken(email, token);
-
-    if (tempToken.isEmpty()) {
-        return false;
+        return true;
     }
-
-    return LocalDateTime.now()
-            .isBefore(tempToken.get().getExpiration());
-}
-
-public String validate(String email, String token) {
-    return validateTemp.validate(email, token);
-}
-
-//metodo cliente que solicita una clave temporal en menos de un min y lo rechaza
-public String withoutKey(String email){
-        LocalDateTime last = lastRequest.get(email);
-        LocalDateTime now = LocalDateTime.now();
-
-        if (last != null &&
-           last.plusMinutes(1).isAfter(now)) {
-
-            throw new RequestDenied(
-                "Máximo de solicitud, espera 1 minuto"
-            );
-        }
-
-        lastRequest.put(email, now);
-        return "Solicitud terminada";
-        }
 }

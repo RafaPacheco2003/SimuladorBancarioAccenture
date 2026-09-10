@@ -32,16 +32,9 @@ public class MailerTestController {
     public ResponseEntity<String> forgotPassword(
             @RequestBody TempKeyRequest request) {
 
-        tempKeyService.withoutKey(request.getEmail());
+        tempKeyService.validateUser(request.getEmail());
 
-        boolean result = tempKeyService.validateUser(request.getEmail());
-
-        if (result) {
-            return ResponseEntity.ok("Token enviado correctamente");
-        }
-
-        return ResponseEntity.badRequest()
-                .body("No se pudo enviar el token");
+        return ResponseEntity.ok("Token enviado correctamente");
     }
 
     @GetMapping("/test-mail")

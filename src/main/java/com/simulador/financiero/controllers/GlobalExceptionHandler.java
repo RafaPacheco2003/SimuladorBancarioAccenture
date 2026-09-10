@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.simulador.financiero.DTOs.response.ErrorDetail;
+import com.simulador.financiero.Exceptions.BadRequestException;
 import com.simulador.financiero.Exceptions.DuplicateResourceException;
 import com.simulador.financiero.Exceptions.InsufficientBalanceException;
 import com.simulador.financiero.Exceptions.RequestDenied;
@@ -21,119 +23,121 @@ import jakarta.servlet.http.HttpServletRequest;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    private static final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
+        private static final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
-    @ExceptionHandler(ResourceNotFoundException.class)
-    public ResponseEntity<ErrorDetail> handleResourceNotFound(
-            ResourceNotFoundException ex,
-            HttpServletRequest request) {
+        @ExceptionHandler(ResourceNotFoundException.class)
+        public ResponseEntity<ErrorDetail> handleResourceNotFound(
+                        ResourceNotFoundException ex,
+                        HttpServletRequest request) {
 
-        ErrorDetail errorDetail = new ErrorDetail(
-                LocalDateTime.now(),
-                404,
-                "Not Found",
-                ex.getMessage(),
-                request.getRequestURI()
-        );
+                ErrorDetail errorDetail = new ErrorDetail(
+                                LocalDateTime.now(),
+                                404,
+                                "Not Found",
+                                ex.getMessage(),
+                                request.getRequestURI());
 
-        return ResponseEntity.status(404).body(errorDetail);
-    }
+                return ResponseEntity.status(404).body(errorDetail);
+        }
 
-    @ExceptionHandler(InsufficientBalanceException.class)
-    public ResponseEntity<ErrorDetail> handleInsufficientBalance(
-            InsufficientBalanceException ex,
-            HttpServletRequest request) {
+        @ExceptionHandler(InsufficientBalanceException.class)
+        public ResponseEntity<ErrorDetail> handleInsufficientBalance(
+                        InsufficientBalanceException ex,
+                        HttpServletRequest request) {
 
-        ErrorDetail errorDetail = new ErrorDetail(
-                LocalDateTime.now(),
-                422,
-                "Insufficient Balance",
-                ex.getMessage(),
-                request.getRequestURI()
-        );
+                ErrorDetail errorDetail = new ErrorDetail(
+                                LocalDateTime.now(),
+                                422,
+                                "Insufficient Balance",
+                                ex.getMessage(),
+                                request.getRequestURI());
 
-        return ResponseEntity.status(422).body(errorDetail);
-    }
+                return ResponseEntity.status(422).body(errorDetail);
+        }
 
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ErrorDetail> handleMethodArgumentNotValid(
-            MethodArgumentNotValidException ex,
-            HttpServletRequest request) {
+        @ExceptionHandler(MethodArgumentNotValidException.class)
+        public ResponseEntity<ErrorDetail> handleMethodArgumentNotValid(
+                        MethodArgumentNotValidException ex,
+                        HttpServletRequest request) {
 
-        ErrorDetail errorDetail = new ErrorDetail(
-                LocalDateTime.now(),
-                400,
-                "Bad Request",
-                "Invalid input data",
-                request.getRequestURI()
-        );
+                ErrorDetail errorDetail = new ErrorDetail(
+                                LocalDateTime.now(),
+                                400,
+                                "Bad Request",
+                                "Invalid input data",
+                                request.getRequestURI());
 
-        return ResponseEntity.status(400).body(errorDetail);
-    }
+                return ResponseEntity.status(400).body(errorDetail);
+        }
 
-    @ExceptionHandler(DuplicateResourceException.class)
-    public ResponseEntity<ErrorDetail> handleDuplicateResource(
-            DuplicateResourceException ex,
-            HttpServletRequest request) {
+        @ExceptionHandler(DuplicateResourceException.class)
+        public ResponseEntity<ErrorDetail> handleDuplicateResource(
+                        DuplicateResourceException ex,
+                        HttpServletRequest request) {
 
-        ErrorDetail errorDetail = new ErrorDetail(
-                LocalDateTime.now(),
-                409,
-                "Duplicate Resource",
-                ex.getMessage(),
-                request.getRequestURI()
-        );
+                ErrorDetail errorDetail = new ErrorDetail(
+                                LocalDateTime.now(),
+                                409,
+                                "Duplicate Resource",
+                                ex.getMessage(),
+                                request.getRequestURI());
 
-        return ResponseEntity.status(409).body(errorDetail);
-    }
+                return ResponseEntity.status(409).body(errorDetail);
+        }
 
-    @ExceptionHandler(RequestDenied.class)
-    public ResponseEntity<ErrorDetail> handleRequestDenied(
-            RequestDenied ex,
-            HttpServletRequest request) {
+        @ExceptionHandler(RequestDenied.class)
+        public ResponseEntity<ErrorDetail> handleRequestDenied(
+                        RequestDenied ex,
+                        HttpServletRequest request) {
 
-        ErrorDetail errorDetail = new ErrorDetail(
-                LocalDateTime.now(),
-                429,
-                "Too Many Requests",
-                ex.getMessage(),
-                request.getRequestURI()
-        );
+                ErrorDetail errorDetail = new ErrorDetail(
+                                LocalDateTime.now(),
+                                429,
+                                "Too Many Requests",
+                                ex.getMessage(),
+                                request.getRequestURI());
 
-        return ResponseEntity.status(429).body(errorDetail);
-    }
+                return ResponseEntity.status(429).body(errorDetail);
+        }
 
-    @ExceptionHandler(BadCredentialsException.class)
-    public ResponseEntity<ErrorDetail> handleBadCredentials(
-            BadCredentialsException ex,
-            HttpServletRequest request) {
+        @ExceptionHandler(BadCredentialsException.class)
+        public ResponseEntity<ErrorDetail> handleBadCredentials(
+                        BadCredentialsException ex,
+                        HttpServletRequest request) {
 
-        ErrorDetail errorDetail = new ErrorDetail(
-                LocalDateTime.now(),
-                401,
-                "Unauthorized",
-                "Correo o contraseña incorrectos",
-                request.getRequestURI()
-        );
+                ErrorDetail errorDetail = new ErrorDetail(
+                                LocalDateTime.now(),
+                                401,
+                                "Unauthorized",
+                                "Correo o contraseña incorrectos",
+                                request.getRequestURI());
 
-        return ResponseEntity.status(401).body(errorDetail);
-    }
+                return ResponseEntity.status(401).body(errorDetail);
+        }
 
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorDetail> handleGenericException(
-            Exception ex,
-            HttpServletRequest request) {
+        @ExceptionHandler(Exception.class)
+        public ResponseEntity<ErrorDetail> handleGenericException(
+                        Exception ex,
+                        HttpServletRequest request) {
 
-        logger.error("An unexpected error occurred: ", ex);
+                logger.error("An unexpected error occurred: ", ex);
 
-        ErrorDetail errorDetail = new ErrorDetail(
-                LocalDateTime.now(),
-                500,
-                "Internal Server Error",
-                "An unexpected error occurred",
-                request.getRequestURI()
-        );
+                ErrorDetail errorDetail = new ErrorDetail(
+                                LocalDateTime.now(),
+                                500,
+                                "Internal Server Error",
+                                "An unexpected error occurred",
+                                request.getRequestURI());
 
-        return ResponseEntity.status(500).body(errorDetail);
-    }
+                return ResponseEntity.status(500).body(errorDetail);
+        }
+
+        @ExceptionHandler(BadRequestException.class)
+        public ResponseEntity<ErrorDetail> handleBadRequestException(Exception exception, HttpServletRequest request) {
+                ErrorDetail errorDetail = new ErrorDetail(
+                                LocalDateTime.now(), 400, "Bad request", exception.getMessage(),
+                                request.getRequestURI());
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorDetail);
+
+        }
 }
