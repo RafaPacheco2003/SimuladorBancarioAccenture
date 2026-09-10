@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.simulador.financiero.entities.UserEntity;
-import com.simulador.financiero.services.UserService;
 
 import jakarta.validation.Valid;
 

@@ -9,7 +9,6 @@ import com.simulador.financiero.entities.UserEntity;
 
 @Component
 public class UserMapper {
-
     public UserEntity toEntity(CreateUserRequest request){
         return new UserEntity(request.fullName(),request.curp(), request.email(),request.password(), request.phone());
     }

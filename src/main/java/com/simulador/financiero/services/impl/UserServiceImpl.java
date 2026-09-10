@@ -31,6 +31,5 @@ public class UserServiceImpl implements IUserService{
         UserEntity userSaved = userRepository.save(userEntity);
         return userMapper.toResponse(userSaved);
     }
-
-
 }
+

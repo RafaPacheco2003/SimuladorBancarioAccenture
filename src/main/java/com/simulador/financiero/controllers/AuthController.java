@@ -13,7 +13,6 @@ import com.simulador.financiero.DTOs.response.LoginResponse;
 import com.simulador.financiero.DTOs.response.UserResponse;
 import com.simulador.financiero.entities.UserEntity;
 import com.simulador.financiero.services.AuthService;
-import com.simulador.financiero.services.UserService;
 import com.simulador.financiero.services.impl.UserServiceImpl;
 
 import jakarta.validation.Valid;
