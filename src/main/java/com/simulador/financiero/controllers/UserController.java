@@ -14,8 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.simulador.financiero.entities.UserEntity;
-import com.simulador.financiero.entities.UserResponse;
-import com.simulador.financiero.services.UserService;
 
 import jakarta.validation.Valid;
 
@@ -23,7 +21,7 @@ import jakarta.validation.Valid;
 // @RequestMapping("/api/v1/auth")
 @RequestMapping ("/api/v1/users")
 public class UserController {
-
+/*
     private final UserService userService;
 
     public UserController(UserService userService) {
@@ -88,4 +86,5 @@ public class UserController {
     public void deleteUser(@PathVariable Long id) {
         userService.deleteUser(id);
     }
+        */
 }
