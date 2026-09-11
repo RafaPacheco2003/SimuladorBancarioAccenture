@@ -1,4 +1,5 @@
 package com.simulador.financiero.repositories;
+
 import com.simulador.financiero.entities.AccountEntity;
 import com.simulador.financiero.entities.UserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
