@@ -1,4 +1,4 @@
-package com.simulador.financiero.services;
+package com.simulador.financiero.config.security;
 
 import java.sql.Date;
 
@@ -13,12 +13,12 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 
-@Service 
+@Service
 public class JwtService {
     @Value("${jwt.secret}")
     private String secretKey;
 
-    @Value("${jwt.expiration}") 
+    @Value("${jwt.expiration}")
     private long expirationTime;
 
     public String generateToken(UserEntity user){

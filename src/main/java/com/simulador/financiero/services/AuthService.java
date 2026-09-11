@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.simulador.financiero.Exceptions.BadRequestException;
+import com.simulador.financiero.config.security.JwtService;
 import com.simulador.financiero.constants.ExceptionMessageConstants;
 import com.simulador.financiero.entities.UserEntity;
 import com.simulador.financiero.entities.TempTockenEntity;
