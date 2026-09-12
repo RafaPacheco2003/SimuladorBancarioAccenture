@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -109,10 +110,25 @@ public class GlobalExceptionHandler {
                                 LocalDateTime.now(),
                                 401,
                                 "Unauthorized",
-                                "Correo o contraseña incorrectos",
+                                ex.getMessage(),
                                 request.getRequestURI());
 
                 return ResponseEntity.status(401).body(errorDetail);
+        }
+
+        @ExceptionHandler(UsernameNotFoundException.class)
+        public ResponseEntity<ErrorDetail> handleUsernameNotFound(
+                        UsernameNotFoundException ex,
+                        HttpServletRequest request) {
+
+                ErrorDetail errorDetail = new ErrorDetail(
+                                LocalDateTime.now(),
+                                404,
+                                "Not Found",
+                                ex.getMessage(),
+                                request.getRequestURI());
+
+                return ResponseEntity.status(404).body(errorDetail);
         }
 
         @ExceptionHandler(Exception.class)

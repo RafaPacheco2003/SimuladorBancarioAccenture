@@ -15,14 +15,17 @@ import com.simulador.financiero.validators.ResetTokenValidator;
 
 import lombok.AllArgsConstructor;
 
+import java.util.Optional;
+
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import com.simulador.financiero.DTOs.request.LoginRequest;
 import com.simulador.financiero.DTOs.response.LoginResponse;
 
 @Service
-@AllArgsConstructor 
+@AllArgsConstructor
 public class AuthService {
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
@@ -36,7 +39,7 @@ public class AuthService {
         TempTockenEntity tempToken = tempTokenRepository.findByToken(temporalKey)
                 .orElseThrow(() -> new BadRequestException(ExceptionMessageConstants.TOKEN_INVALID_OR_EXPIRED));
 
-        if (ResetTokenValidator.isExpired(tempToken.getCreatedAt())){
+        if (ResetTokenValidator.isExpired(tempToken.getCreatedAt())) {
             tempTokenRepository.delete(tempToken);
             throw new BadRequestException(ExceptionMessageConstants.TOKEN_INVALID_OR_EXPIRED);
         }
@@ -49,13 +52,16 @@ public class AuthService {
     }
 
     public LoginResponse login(LoginRequest request) {
+        
+        UserEntity user = userRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new UsernameNotFoundException(ExceptionMessageConstants.USERNAME_NOT_FOUND));
+
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                 request.getEmail(),
                 request.getPassword()));
 
-        var user = userRepository.findByEmail(request.getEmail());
 
-        String token = jwtService.generateToken(user.get());
+        String token = jwtService.generateToken(user);
         return new LoginResponse(token, jwtService.getExpirationTime());
 
     }
