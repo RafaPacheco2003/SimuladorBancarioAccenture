@@ -15,7 +15,6 @@ import com.simulador.financiero.validators.ResetTokenValidator;
 
 import lombok.AllArgsConstructor;
 
-import java.util.Optional;
 
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

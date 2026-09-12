@@ -13,18 +13,15 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
-import io.swagger.v3.oas.annotations.security.SecurityScheme;
+import jakarta.servlet.http.HttpServletResponse;
 
 @Configuration
-@SecurityScheme(name = "Auth bearer", type = SecuritySchemeType.HTTP, scheme = "bearer", bearerFormat = "JWT")
 public class SecurityConfig {
 
     private final JwtAuthorizationFilter jwtAuthorizationFilter;
 
     public SecurityConfig(JwtAuthorizationFilter jwtAuthorizationFilter) {
         this.jwtAuthorizationFilter = jwtAuthorizationFilter;
-
     }
 
     private static final String[] PUBLIC_URLS = {
@@ -35,16 +32,34 @@ public class SecurityConfig {
     };
 
     @Bean
-    public SecurityFilterChain securityFilterChain(
-            HttpSecurity http, AuthenticationManager authenticationManager) throws Exception {
-        http.csrf(AbstractHttpConfigurer::disable)
-                .sessionManagement(
-                        session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authenticationManager(authenticationManager).authorizeHttpRequests(auth -> {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http
+                .csrf(AbstractHttpConfigurer::disable)
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authorizeHttpRequests(auth -> {
                     auth.requestMatchers(PUBLIC_URLS).permitAll();
-                    auth.requestMatchers(request -> HttpMethod.OPTIONS.matches(request.getMethod())).permitAll();
+                    auth.requestMatchers(HttpMethod.OPTIONS, "/**").permitAll();
                     auth.anyRequest().authenticated();
-                }).addFilterBefore(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class);
+                })
+                .exceptionHandling(exception -> exception
+                        .authenticationEntryPoint((request, response, authException) -> {
+                            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                            response.setContentType("application/json");
+                            response.setCharacterEncoding("UTF-8");
+                            response.getWriter().write("""
+                                    {"success":false,"message":"Unauthorized"}
+                                    """);
+                        })
+                        .accessDeniedHandler((request, response, accessDeniedException) -> {
+                            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                            response.setContentType("application/json");
+                            response.setCharacterEncoding("UTF-8");
+                            response.getWriter().write("""
+                                    {"success":false,"message":"Forbidden"}
+                                    """);
+                        }))
+                .addFilterBefore(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class);
+
         return http.build();
     }
 
