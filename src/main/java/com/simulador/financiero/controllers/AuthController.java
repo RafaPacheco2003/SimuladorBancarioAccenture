@@ -46,13 +46,18 @@ public class AuthController {
     }
 
     @PostMapping("/login")
+    @Operation(summary = "iniciar sesion del usuario", description = "Usuario se logea con su email y su password.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = LoginResponse.class))),
+            @ApiResponse(responseCode = "401", content = @Content(schema = @Schema(implementation = ErrorDetail.class)))
+    })
     public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest request) {
         LoginResponse loginResponse = authService.login(request);
         return ResponseEntity.ok(loginResponse);
 
     }
 
-    @PostMapping("reset-password")
+    @PostMapping("/reset-password")
     @Operation(summary = "Cambiar contraseña con clave temporal", description = "Valida la clave temporal y actualiza la contraseña del usuario.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Contraseña actualizada", content = @Content(schema = @Schema(implementation = PasswordResetResponse.class))),
