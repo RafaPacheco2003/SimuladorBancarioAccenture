@@ -27,6 +27,7 @@ import com.simulador.financiero.repositories.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.simulador.financiero.Exceptions.BadRequestException;
+import com.simulador.financiero.config.security.JwtService;
 import com.simulador.financiero.constants.ConfigurationConstants;
 import com.simulador.financiero.entities.TempTockenEntity;
 import com.simulador.financiero.repositories.TempTokenRepository;
