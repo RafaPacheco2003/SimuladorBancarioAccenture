@@ -3,10 +3,12 @@ package com.simulador.financiero.controllers;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.simulador.financiero.DTOs.request.CreateAccountRequest;
 import com.simulador.financiero.config.security.AuthenticatedUser;
+import com.simulador.financiero.entities.AccountEntity;
 import com.simulador.financiero.services.IAccountService;
 import com.simulador.financiero.utils.AuthenticatedUserProvider;
-
+import org.springframework.web.bind.annotation.RequestBody;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 
@@ -17,13 +19,20 @@ public class AccountController {
 
     private final IAccountService accountService;
 
-    @PostMapping
-    public String createAccount() {
-        AuthenticatedUser authenticatedUser = AuthenticatedUserProvider.getAuthenticatedUser();
 
-        accountService.createAccount(authenticatedUser.id());
+        @PostMapping
+        public String createAccount(@RequestBody CreateAccountRequest request) {
 
-        return "created";
-    }
+        AuthenticatedUser authenticatedUser =
+        AuthenticatedUserProvider.getAuthenticatedUser();
+
+        accountService.createAccount(
+                authenticatedUser.id(),
+                request.accountType(),
+                request.currency()
+        );
+
+        return "Account successfully created";
+        }
 
 }

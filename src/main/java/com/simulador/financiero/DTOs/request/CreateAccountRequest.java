@@ -1,14 +1,9 @@
-package com.simulador.financiero.services;
+package com.simulador.financiero.DTOs.request;
 
 import com.simulador.financiero.account.AccountType;
 import com.simulador.financiero.account.Currency;
 
-public interface IAccountService {
-
-    public void createAccount(
-        Long userId,
+public record CreateAccountRequest(
         AccountType accountType,
         Currency currency
-    );
-
-}
+) {}
