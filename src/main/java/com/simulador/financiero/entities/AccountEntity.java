@@ -13,12 +13,16 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.PrePersist;
-import jakarta.persistence.Table;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import com.simulador.financiero.account.AccountType;
+import com.simulador.financiero.account.Currency;
+import com.simulador.financiero.account.Status;
 
 @Entity
 @Getter
@@ -27,33 +31,17 @@ import lombok.Setter;
 @AllArgsConstructor
 @Builder
 public class AccountEntity {
-
-    public enum Status {
-        ACTIVE,
-        BLOCKED
-    }
-
-    public enum TipoCuenta {
-        AHORRO,
-        CORRIENTE
-    }
-
-    public enum Moneda {
-        MXN,
-        USD
-    }
-
     @Id
     @Column(nullable = false, unique = true, length = 16)
     private String number;
 
-    @Enumerated(EnumType.STRING)
+    @Enumerated(EnumType.ORDINAL)
     @Column(nullable = false)
-    private TipoCuenta tipoCuenta;
+    private AccountType accountType;
 
-    @Enumerated(EnumType.STRING)
+    @Enumerated(EnumType.ORDINAL)
     @Column(nullable = false)
-    private Moneda moneda;
+    private Currency currency;
 
     @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal balance;
@@ -65,16 +53,22 @@ public class AccountEntity {
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "user_id", nullable = false)
+    private UserEntity user;
+
     @PrePersist
-    private void generarNumeroTarjeta() {
+    private void generateAccountNumber() {
+
         if (number == null) {
             Random random = new Random();
-            StringBuilder numero = new StringBuilder("3141");
+            StringBuilder numberBuilder = new StringBuilder("3141");
 
             for (int i = 0; i < 12; i++) {
-                numero.append(random.nextInt(10));
+                numberBuilder.append(random.nextInt(10));
             }
-            number = numero.toString();
+
+            number = numberBuilder.toString();
         }
 
         if (createdAt == null) {
@@ -89,8 +83,4 @@ public class AccountEntity {
             balance = BigDecimal.ZERO;
         }
     }
-
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "user_id", nullable = false)
-    private UserEntity user;
 }

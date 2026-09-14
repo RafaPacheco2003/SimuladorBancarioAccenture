@@ -1,14 +1,14 @@
 package com.simulador.financiero.controllers;
 
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.simulador.financiero.DTOs.request.CreateAccountRequest;
 import com.simulador.financiero.config.security.AuthenticatedUser;
 import com.simulador.financiero.entities.AccountEntity;
 import com.simulador.financiero.services.IAccountService;
 import com.simulador.financiero.utils.AuthenticatedUserProvider;
-
+import org.springframework.web.bind.annotation.RequestBody;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 
@@ -20,21 +20,19 @@ public class AccountController {
     private final IAccountService accountService;
 
 
-    @PostMapping
-    public String createAccount(
-            @RequestParam AccountEntity.TipoCuenta tipoCuenta,
-            @RequestParam AccountEntity.Moneda moneda) {
+        @PostMapping
+        public String createAccount(@RequestBody CreateAccountRequest request) {
 
         AuthenticatedUser authenticatedUser =
-                AuthenticatedUserProvider.getAuthenticatedUser();
+        AuthenticatedUserProvider.getAuthenticatedUser();
 
         accountService.createAccount(
                 authenticatedUser.id(),
-                tipoCuenta,
-                moneda
+                request.accountType(),
+                request.currency()
         );
 
-        return "created";
-    }
+        return "Account successfully created";
+        }
 
 }

@@ -1,10 +1,13 @@
 package com.simulador.financiero.services;
 
+import com.simulador.financiero.account.AccountType;
+import com.simulador.financiero.account.Currency;
 import com.simulador.financiero.entities.AccountEntity;
 import com.simulador.financiero.entities.UserEntity;
 import com.simulador.financiero.repositories.AccountRepository;
 import com.simulador.financiero.repositories.UserRepository;
 import org.springframework.stereotype.Service;
+import com.simulador.financiero.account.Currency;
 
 @Service
 public class AccountService implements IAccountService {
@@ -17,15 +20,14 @@ public class AccountService implements IAccountService {
         this.userRepository = userRepository;
     }
 
-    public void createAccount(Long userId, AccountEntity.TipoCuenta tipoCuenta, AccountEntity.Moneda moneda) {
+    public void createAccount(Long userId, AccountType accountType, Currency currency) {
 
-        UserEntity user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+        UserEntity user = userRepository.getReferenceById(userId);
 
         AccountEntity account = AccountEntity.builder()
                 .user(user)
-                .moneda(moneda)
-                .tipoCuenta(tipoCuenta)
+                .currency(currency)
+                .accountType(accountType)
                 .build();
 
         accountRepository.save(account);
