@@ -32,7 +32,7 @@ public class AccountController {
                 request.currency()
         );
 
-        return "Account successfully created";
+        return "Account successfully created and account number: ";
         }
 
 }
