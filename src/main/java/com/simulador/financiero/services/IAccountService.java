@@ -8,7 +8,7 @@ import com.simulador.financiero.entities.AccountEntity;
 
 public interface IAccountService {
 
-    public void createAccount(
+    public String createAccount(
         Long userId,
         AccountType accountType,
         Currency currency
