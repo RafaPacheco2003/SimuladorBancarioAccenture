@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import com.simulador.financiero.DTOs.response.ErrorDetail;
 import com.simulador.financiero.Exceptions.BadRequestException;
 import com.simulador.financiero.Exceptions.DuplicateResourceException;
+import com.simulador.financiero.Exceptions.ForbiddenException;
 import com.simulador.financiero.Exceptions.InsufficientBalanceException;
 import com.simulador.financiero.Exceptions.RequestDenied;
 import com.simulador.financiero.Exceptions.ResourceNotFoundException;
@@ -84,6 +85,21 @@ public class GlobalExceptionHandler {
                                 request.getRequestURI());
 
                 return ResponseEntity.status(409).body(errorDetail);
+        }
+
+        @ExceptionHandler(ForbiddenException.class)
+        public ResponseEntity<ErrorDetail> handleForbidden(
+                        ForbiddenException ex,
+                        HttpServletRequest request) {
+
+                ErrorDetail errorDetail = new ErrorDetail(
+                                LocalDateTime.now(),
+                                403,
+                                "Forbidden",
+                                ex.getMessage(),
+                                request.getRequestURI());
+
+                return ResponseEntity.status(403).body(errorDetail);
         }
 
         @ExceptionHandler(RequestDenied.class)
