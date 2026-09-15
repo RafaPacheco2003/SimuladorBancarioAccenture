@@ -26,13 +26,12 @@ public class AccountController {
         AuthenticatedUser authenticatedUser =
         AuthenticatedUserProvider.getAuthenticatedUser();
 
-        accountService.createAccount(
+        String number= accountService.createAccount(
                 authenticatedUser.id(),
                 request.accountType(),
                 request.currency()
         );
 
-        return "Account successfully created";
+        return "Account successfully created and account number: " +number;
         }
-
 }

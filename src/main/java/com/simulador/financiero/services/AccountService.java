@@ -23,7 +23,7 @@ public class AccountService implements IAccountService {
         this.userRepository = userRepository;
     }
 
-    public void createAccount(Long userId, AccountType accountType, Currency currency) {
+    public String createAccount(Long userId, AccountType accountType, Currency currency) {
 
         UserEntity user = userRepository.getReferenceById(userId);
 
@@ -34,6 +34,7 @@ public class AccountService implements IAccountService {
                 .build();
 
         accountRepository.save(account);
+        return account.getNumber();
     }
 
     @Override
