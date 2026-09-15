@@ -2,6 +2,8 @@ package com.simulador.financiero.entities;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 import jakarta.persistence.Column;
@@ -12,6 +14,7 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.PrePersist;
 
 import lombok.AllArgsConstructor;
@@ -56,6 +59,14 @@ public class AccountEntity {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_id", nullable = false)
     private UserEntity user;
+
+    @OneToMany(mappedBy = "originAccount")
+    @Builder.Default
+    private List<TransactionEntity> sendTransfers = new ArrayList<>();
+
+    @OneToMany(mappedBy = "destinationAccount")
+    @Builder.Default
+    private List<TransactionEntity> receivedTransfers = new ArrayList<>();
 
     @PrePersist
     private void generateAccountNumber() {

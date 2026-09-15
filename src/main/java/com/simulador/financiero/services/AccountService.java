@@ -1,13 +1,16 @@
 package com.simulador.financiero.services;
 
+import java.math.BigDecimal;
+
+import com.simulador.financiero.Exceptions.ResourceNotFoundException;
 import com.simulador.financiero.account.AccountType;
 import com.simulador.financiero.account.Currency;
+import com.simulador.financiero.constants.ExceptionMessageConstants;
 import com.simulador.financiero.entities.AccountEntity;
 import com.simulador.financiero.entities.UserEntity;
 import com.simulador.financiero.repositories.AccountRepository;
 import com.simulador.financiero.repositories.UserRepository;
 import org.springframework.stereotype.Service;
-import com.simulador.financiero.account.Currency;
 
 @Service
 public class AccountService implements IAccountService {
@@ -30,6 +33,25 @@ public class AccountService implements IAccountService {
                 .accountType(accountType)
                 .build();
 
+        accountRepository.save(account);
+    }
+
+    @Override
+    public AccountEntity findByNumber(String number) {
+        return accountRepository.findById(number)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        ExceptionMessageConstants.ACCOUNT_NOT_FOUND));
+    }
+
+    @Override
+    public void withdraw(AccountEntity account, BigDecimal amount) {
+        account.setBalance(account.getBalance().subtract(amount));
+        accountRepository.save(account);
+    }
+
+    @Override
+    public void deposit(AccountEntity account, BigDecimal amount) {
+        account.setBalance(account.getBalance().add(amount));
         accountRepository.save(account);
     }
 }
