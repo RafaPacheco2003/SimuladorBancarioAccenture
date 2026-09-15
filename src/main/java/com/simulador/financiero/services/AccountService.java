@@ -7,7 +7,6 @@ import com.simulador.financiero.entities.UserEntity;
 import com.simulador.financiero.repositories.AccountRepository;
 import com.simulador.financiero.repositories.UserRepository;
 import org.springframework.stereotype.Service;
-import com.simulador.financiero.account.Currency;
 
 @Service
 public class AccountService implements IAccountService {
@@ -20,7 +19,7 @@ public class AccountService implements IAccountService {
         this.userRepository = userRepository;
     }
 
-    public void createAccount(Long userId, AccountType accountType, Currency currency) {
+    public String createAccount(Long userId, AccountType accountType, Currency currency) {
 
         UserEntity user = userRepository.getReferenceById(userId);
 
@@ -31,5 +30,6 @@ public class AccountService implements IAccountService {
                 .build();
 
         accountRepository.save(account);
+        return account.getNumber();
     }
 }

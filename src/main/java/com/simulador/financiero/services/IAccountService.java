@@ -5,7 +5,7 @@ import com.simulador.financiero.account.Currency;
 
 public interface IAccountService {
 
-    public void createAccount(
+    public String createAccount(
         Long userId,
         AccountType accountType,
         Currency currency
