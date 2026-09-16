@@ -39,6 +39,7 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> {
                     auth.requestMatchers(PUBLIC_URLS).permitAll();
+                    auth.requestMatchers("/api/v1/batch/**").permitAll();
                     auth.requestMatchers(HttpMethod.OPTIONS, "/**").permitAll();
                     auth.anyRequest().authenticated();
                 })
