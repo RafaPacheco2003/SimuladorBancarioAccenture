@@ -25,10 +25,12 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     private final AntPathMatcher pathMatcher = new AntPathMatcher();
 
     private static final String[] PUBLIC_URLS = {
-        "/api/v1/auth/**",
-        "/swagger-ui/**",
-        "/swagger-ui.html",
-        "/v3/api-docs/**"
+            "/api/v1/auth/**",
+            "/api/v1/api-externa/**",
+            "/api/v1/batch/**",
+            "/swagger-ui/**",
+            "/swagger-ui.html",
+            "/v3/api-docs/**"
     };
 
     public JwtAuthorizationFilter(JwtService jwtService, UserDetailsServiceImpl userDetailsServiceImpl) {
@@ -40,8 +42,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(
             @NonNull HttpServletRequest request,
             @NonNull HttpServletResponse response,
-            @NonNull FilterChain filterChain
-    ) throws ServletException, IOException {
+            @NonNull FilterChain filterChain) throws ServletException, IOException {
         String requestUri = request.getRequestURI();
 
         boolean isPublicPath = Arrays.stream(PUBLIC_URLS)
@@ -57,12 +58,10 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             if (jwtService.isTokenValid(token)) {
                 String username = jwtService.getUsernameFromToken(token);
                 UserDetails userDetails = userDetailsServiceImpl.loadUserByUsername(username);
-                UsernamePasswordAuthenticationToken authentication =
-                        new UsernamePasswordAuthenticationToken(
-                                userDetails,
-                                null,
-                                userDetails.getAuthorities()
-                        );
+                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
+                        userDetails,
+                        null,
+                        userDetails.getAuthorities());
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             } else {
                 SecurityContextHolder.clearContext();
@@ -73,7 +72,4 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 
-} 
-
-
-
+}
