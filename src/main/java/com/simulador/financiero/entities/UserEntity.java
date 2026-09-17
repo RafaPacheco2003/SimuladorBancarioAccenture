@@ -2,7 +2,10 @@ package com.simulador.financiero.entities;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -10,9 +13,23 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.PrePersist;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
+@Getter 
+@AllArgsConstructor 
+@Setter 
+@NoArgsConstructor
+@Builder 
 public class UserEntity {
 
     @Id
@@ -24,6 +41,9 @@ public class UserEntity {
 
     @Column(nullable = false, unique = true)
     private String curp;
+
+    @Column(nullable = false, unique = true)
+    private String email;
 
     @Column(nullable = false)
     private String password;
@@ -40,13 +60,37 @@ public class UserEntity {
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
+
+    public UserEntity(@NotBlank(message = "El nombre es obligatorio") String fullName,
+        @NotBlank(message = "El CURP es obligatorio") String curp,
+        @NotBlank(message = "El email es obligatorio") @Email(message = "El email debe tener un formato válido") String email,
+        @NotBlank(message = "La contraseña es obligatoria") @Size(min = 8, message = "La contraseña debe tener mínimo 8 caracteres") String password,
+        String phone) {
+        this.fullName = fullName;
+        this.curp = curp;
+        this.email = email;
+        this.password = password;
+        this.phone = phone;
+    }
+
     @PrePersist
     protected void onCreate() {
-        createdAt = LocalDateTime.now();
+
+        if (createdAt == null) {
+            createdAt = LocalDateTime.now();
+        }
 
         if (status == null) {
             status = UserStatus.ACTIVE;
         }
+
+        if (saldo == null) {
+            saldo = BigDecimal.ZERO;
+        }
     }
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private List<AccountEntity> accounts = new ArrayList<>();
+    
 }

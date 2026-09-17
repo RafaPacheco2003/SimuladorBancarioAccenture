@@ -1,0 +1,44 @@
+services:
+  app:
+    build: .
+    container_name: nova_bank_backend
+    # GitHub Codespaces: Compose's private bridge network cannot resolve external
+    # DNS (Docker's embedded resolver can't reach Azure's DNS, and egress to public
+    # resolvers is blocked by the Codespaces firewall), so Maven fails to download
+    # dependencies. Sharing the host network stack gives the container the working
+    # DNS the Codespace VM uses.
+    network_mode: host
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      # With network_mode: host there is no Compose service DNS, so reach Postgres
+      # through its port published on the host, not the "postgres" service name.
+      SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/nova_bank
+      SPRING_DATASOURCE_USERNAME: myuser
+      SPRING_DATASOURCE_PASSWORD: mypassword
+    volumes:
+      - .:/app
+      - maven_repo:/root/.m2
+
+  postgres:
+    image: postgres:16-alpine
+    container_name: postgres_db
+    restart: always
+    environment:
+      POSTGRES_DB: nova_bank
+      POSTGRES_USER: myuser
+      POSTGRES_PASSWORD: mypassword
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U myuser -d nova_bank"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres_data:
+  maven_repo:
