@@ -27,6 +27,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     private static final String[] PUBLIC_URLS = {
             "/api/v1/auth/**",
             "/api/v1/api-externa/**",
+            "/api/v1/batch/**",
             "/swagger-ui/**",
             "/swagger-ui.html",
             "/v3/api-docs/**"

@@ -57,6 +57,9 @@ public class BatchConfig {
                 .processor(symbolProcessor())
                 .writer(items -> {
                 })
+                .faultTolerant()
+                .skip(RuntimeException.class)
+                .skipLimit(symbols.size())
                 .build();
     }
 
