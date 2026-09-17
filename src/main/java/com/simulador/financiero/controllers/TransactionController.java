@@ -1,15 +1,22 @@
 package com.simulador.financiero.controllers;
 
+import java.math.BigDecimal;
+import java.util.List;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.simulador.financiero.DTOs.request.TransactionRequest;
 import com.simulador.financiero.DTOs.response.ComprobanteResponse;
 import com.simulador.financiero.DTOs.response.ErrorDetail;
+import com.simulador.financiero.DTOs.response.TransactionHistResponse;
 import com.simulador.financiero.config.security.AuthenticatedUser;
 import com.simulador.financiero.services.ITransactionService;
 import com.simulador.financiero.utils.AuthenticatedUserProvider;
@@ -22,6 +29,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import com.simulador.financiero.entities.AccountEntity;
 
 @RestController
 @RequestMapping("/api/v1/transferencias")
@@ -56,4 +64,10 @@ public class TransactionController {
 
         return ResponseEntity.status(HttpStatus.CREATED).body(comprobante);
     }
+
+        @GetMapping("/{numeroCuenta}")
+    public List<TransactionHistResponse> getTransactionHistory(@PathVariable String numeroCuenta){
+                return transactionService.getTransactionsHistory(numeroCuenta);
+    }
+    
 }
