@@ -1,12 +1,15 @@
 package com.simulador.financiero.services.impl;
 
 import java.math.BigDecimal;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.simulador.financiero.DTOs.request.TransactionRequest;
 import com.simulador.financiero.DTOs.response.ComprobanteResponse;
+import com.simulador.financiero.DTOs.response.TransactionHistResponse;
 import com.simulador.financiero.entities.AccountEntity;
 import com.simulador.financiero.entities.TransactionEntity;
 import com.simulador.financiero.mappers.TransactionMapper;
@@ -66,4 +69,13 @@ public class TransactionServiceImpl implements ITransactionService {
 
         return transactionMapper.toComprobante(transactionRepository.save(transaction));
     }
+
+        @Override
+        @Transactional(readOnly = true)
+        public List<TransactionHistResponse> getTransactionsHistory(String accountNumber) {
+                return transactionRepository.findByOriginAccount_Number(accountNumber)
+                                .stream()
+                                .map(transactionMapper::toTransactionHist)
+                                .collect(Collectors.toList());
+        }
 }
