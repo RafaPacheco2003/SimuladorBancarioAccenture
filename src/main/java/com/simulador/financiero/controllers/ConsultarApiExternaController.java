@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.simulador.financiero.DTOs.response.StockResponse;
+import com.simulador.financiero.entities.StocksEntity;
+import com.simulador.financiero.repositories.StockRespository;
 import com.simulador.financiero.services.IConsultarApiExternaService;
 
 import lombok.AllArgsConstructor;
@@ -18,10 +20,16 @@ import lombok.AllArgsConstructor;
 public class ConsultarApiExternaController {
 
   private final IConsultarApiExternaService consultarApiExternaService;
+  private final StockRespository stockRepository;
 
   @GetMapping("/cotizacion/{symbol}")
   public StockResponse consultarCotizacion(@PathVariable String symbol) {
     return consultarApiExternaService.consultarYGuardarCotizacion(symbol);
+  }
+
+  @GetMapping("/cotizaciones")
+  public List<StocksEntity> consultarCotizaciones() {
+    return stockRepository.findAll();
   }
 
 
