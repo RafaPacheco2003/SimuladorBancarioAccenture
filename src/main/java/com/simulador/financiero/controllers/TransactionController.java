@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.simulador.financiero.DTOs.request.CashMovementRequest;
 import com.simulador.financiero.DTOs.request.TransactionRequest;
 import com.simulador.financiero.DTOs.response.ComprobanteResponse;
+import com.simulador.financiero.DTOs.request.WithdrawalRequest;
 import com.simulador.financiero.DTOs.response.ErrorDetail;
 import com.simulador.financiero.DTOs.response.TransactionHistResponse;
 import com.simulador.financiero.config.security.AuthenticatedUser;
@@ -60,8 +61,8 @@ public class TransactionController {
                 return ResponseEntity.status(HttpStatus.CREATED).body(comprobante);
         }
 
-        @GetMapping("/{numeroCuenta}")
-        public List<TransactionHistResponse> getTransactionHistory(@PathVariable String numeroCuenta) {
+    @GetMapping("/{numeroCuenta}")
+    public List<TransactionHistResponse> getTransactionHistory(@PathVariable String numeroCuenta){
                 return transactionService.getTransactionsHistory(numeroCuenta);
         }
 
@@ -83,4 +84,15 @@ public class TransactionController {
                 return ResponseEntity.status(HttpStatus.CREATED).body(comprobante);
         }
 
+    }
+
+    @PostMapping("/retiro")
+    public ResponseEntity<ComprobanteResponse> performWithdrawal(@Valid @RequestBody WithdrawalRequest request) {
+
+        AuthenticatedUser authenticatedUser = AuthenticatedUserProvider.getAuthenticatedUser();
+
+        ComprobanteResponse comprobante = transactionService.performWithdrawal(authenticatedUser.id(), request);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(comprobante);
+    }
 }
