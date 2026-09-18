@@ -13,7 +13,7 @@ import com.simulador.financiero.repositories.TransactionRepository;
 
 @Service
 public class TransactionService {
-    private final TransactionRepository transactionRepo;
+/*     private final TransactionRepository transactionRepo;
     private final TransactionMapper transactionMapper;
     
     public TransactionService(TransactionRepository transactionRepo, TransactionMapper transactionMapper) {
@@ -33,6 +33,6 @@ public class TransactionService {
             throw new ResponseStatusException(HttpStatus.OK, "No se encontraron transacciones para la cuenta: " + accountNumber);
         }
         return TransactionHistory;
-    }
+    } */
 
 }

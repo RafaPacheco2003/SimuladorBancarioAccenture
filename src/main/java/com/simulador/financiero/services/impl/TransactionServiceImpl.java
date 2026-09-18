@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.simulador.financiero.DTOs.request.TransactionRequest;
+import com.simulador.financiero.DTOs.request.WithdrawalRequest;
 import com.simulador.financiero.DTOs.response.ComprobanteResponse;
 import com.simulador.financiero.DTOs.response.TransactionHistResponse;
 import com.simulador.financiero.entities.AccountEntity;
@@ -78,4 +79,22 @@ public class TransactionServiceImpl implements ITransactionService {
                                 .map(transactionMapper::toTransactionHist)
                                 .collect(Collectors.toList());
         }
+
+        @Override
+        @Transactional
+        public ComprobanteResponse performWithdrawal(Long userId, WithdrawalRequest request) {
+                
+                AccountEntity account = accountService.findByNumber(request.Account());
+                TransferValidator.validateOwnership(account, userId);
+                TransferValidator.validateIsActive(account);
+                TransferValidator.validateAmount(request.Amount());
+                TransferValidator.validateSufficientBalance(account, request.Amount());
+                
+                accountService.withdraw(account, request.Amount());
+
+                TransactionEntity transaction = transactionMapper.toWithdrawal(account, request.Amount(), request.Concept());
+                
+                return transactionMapper.toComprobante(transactionRepository.save(transaction));
+        }        
 }
+

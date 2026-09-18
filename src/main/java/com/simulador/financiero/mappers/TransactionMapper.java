@@ -51,4 +51,18 @@ public class TransactionMapper {
                 entity.getStatus(),
                 entity.getDate());
     }
+
+    public TransactionEntity toWithdrawal(AccountEntity account, BigDecimal amount, String concept) {
+        return  TransactionEntity.builder()
+                .originAccount(account)
+                .destinationAccount(account)
+                .originalAmount(amount)
+                .originCurrency(account.getCurrency())
+                .destinationAmount(amount)
+                .destinationCurrency(account.getCurrency())
+                .exchangeRate(BigDecimal.ONE)
+                .concept(concept)
+                .status(TransactionStatus.COMPLETED)
+                .build();
+    }
 }
