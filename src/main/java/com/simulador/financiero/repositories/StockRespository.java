@@ -10,5 +10,5 @@ import com.simulador.financiero.entities.StocksEntity;
 @Repository
 public interface StockRespository extends JpaRepository<StocksEntity, Long> {
 
-    Optional<StocksEntity> findByTicker(String ticker);
+    Optional<StocksEntity> findByTickerIgnoreCase(String ticker);
 }

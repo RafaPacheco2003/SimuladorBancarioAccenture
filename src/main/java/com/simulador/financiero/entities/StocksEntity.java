@@ -26,7 +26,7 @@ public class StocksEntity {
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name="destination_ticker", nullable=false, unique=true)
+    @Column(name="destination_ticker", nullable=false)
     private String ticker;
 
     @Column(name="company_name", nullable=false)
