@@ -61,8 +61,8 @@ public class TransactionController {
                 return ResponseEntity.status(HttpStatus.CREATED).body(comprobante);
         }
 
-    @GetMapping("/{numeroCuenta}")
-    public List<TransactionHistResponse> getTransactionHistory(@PathVariable String numeroCuenta){
+        @GetMapping("/{numeroCuenta}")
+        public List<TransactionHistResponse> getTransactionHistory(@PathVariable String numeroCuenta) {
                 return transactionService.getTransactionsHistory(numeroCuenta);
         }
 
@@ -84,15 +84,21 @@ public class TransactionController {
                 return ResponseEntity.status(HttpStatus.CREATED).body(comprobante);
         }
 
-    }
+        @PostMapping("/withdrawals")
+        @Operation(summary = "Realizar un retiro en efectivo", description = "Retira un monto de una cuenta propia del usuario autenticado.")
+                @ApiResponses({
+                        @ApiResponse(responseCode = "201", description = "Retiro realizado", content = @Content(schema = @Schema(implementation = ComprobanteResponse.class))),
+                        @ApiResponse(responseCode = "400", description = "Datos inválidos o cuenta bloqueada", content = @Content(schema = @Schema(implementation = ErrorDetail.class))),
+                        @ApiResponse(responseCode = "403", description = "La cuenta no pertenece al usuario autenticado", content = @Content(schema = @Schema(implementation = ErrorDetail.class))),
+                        @ApiResponse(responseCode = "404", description = "Cuenta no encontrada", content = @Content(schema = @Schema(implementation = ErrorDetail.class))),
+                        @ApiResponse(responseCode = "422", description = "Saldo insuficiente", content = @Content(schema = @Schema(implementation = ErrorDetail.class)))
+        })
+        public ResponseEntity<ComprobanteResponse> performWithdrawal(@Valid @RequestBody WithdrawalRequest request) {
 
-    @PostMapping("/retiro")
-    public ResponseEntity<ComprobanteResponse> performWithdrawal(@Valid @RequestBody WithdrawalRequest request) {
+                AuthenticatedUser authenticatedUser = AuthenticatedUserProvider.getAuthenticatedUser();
 
-        AuthenticatedUser authenticatedUser = AuthenticatedUserProvider.getAuthenticatedUser();
+                ComprobanteResponse comprobante = transactionService.performWithdrawal(authenticatedUser.id(), request);
 
-        ComprobanteResponse comprobante = transactionService.performWithdrawal(authenticatedUser.id(), request);
-
-        return ResponseEntity.status(HttpStatus.CREATED).body(comprobante);
-    }
+                return ResponseEntity.status(HttpStatus.CREATED).body(comprobante);
+        }
 }

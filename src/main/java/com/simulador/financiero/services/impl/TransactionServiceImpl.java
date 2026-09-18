@@ -89,15 +89,7 @@ public class TransactionServiceImpl implements ITransactionService {
                 return transactionMapper.toComprobante(transactionRepository.save(transaction));
         }
 
-        @Override
-        @Transactional(readOnly = true)
-        public List<TransactionHistResponse> getTransactionsHistory(String accountNumber) {
-                return transactionRepository.findByOriginAccount_Number(accountNumber)
-                                .stream()
-                                .map(transactionMapper::toTransactionHist)
-                                .collect(Collectors.toList());
-        }
-
+        
         @Override
         @Transactional
         public ComprobanteResponse performWithdrawal(Long userId, WithdrawalRequest request) {
@@ -113,6 +105,15 @@ public class TransactionServiceImpl implements ITransactionService {
                 TransactionEntity transaction = transactionMapper.toWithdrawal(account, request.Amount(), request.Concept());
                 
                 return transactionMapper.toComprobante(transactionRepository.save(transaction));
-        }        
+        }
+               
+        @Override
+        @Transactional(readOnly = true)
+        public List<TransactionHistResponse> getTransactionsHistory(String accountNumber) {
+                return transactionRepository.findByOriginAccount_Number(accountNumber)
+                                .stream()
+                                .map(transactionMapper::toTransactionHist)
+                                .collect(Collectors.toList());
+        }
 }
 
