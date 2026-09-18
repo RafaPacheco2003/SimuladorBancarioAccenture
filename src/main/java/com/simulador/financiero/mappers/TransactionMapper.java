@@ -34,6 +34,21 @@ public class TransactionMapper {
                 .build();
     }
 
+    public TransactionEntity toDepositEntity(AccountEntity account, BigDecimal amount, String concept) {
+
+        return TransactionEntity.builder()
+                .originAccount(account)
+                .destinationAccount(account)
+                .originalAmount(amount)
+                .originCurrency(account.getCurrency())
+                .destinationAmount(amount)
+                .destinationCurrency(account.getCurrency())
+                .exchangeRate(BigDecimal.ONE)
+                .concept(concept)
+                .status(TransactionStatus.COMPLETED)
+                .build();
+    }
+
     public ComprobanteResponse toComprobante(TransactionEntity entity) {
         return new ComprobanteResponse(
                 entity.getId(),
