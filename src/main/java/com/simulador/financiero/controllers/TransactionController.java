@@ -13,8 +13,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.simulador.financiero.DTOs.request.CashMovementRequest;
 import com.simulador.financiero.DTOs.request.TransactionRequest;
 import com.simulador.financiero.DTOs.response.ComprobanteResponse;
+import com.simulador.financiero.DTOs.request.WithdrawalRequest;
 import com.simulador.financiero.DTOs.response.ErrorDetail;
 import com.simulador.financiero.DTOs.response.TransactionHistResponse;
 import com.simulador.financiero.config.security.AuthenticatedUser;
@@ -34,40 +36,69 @@ import com.simulador.financiero.entities.AccountEntity;
 @RestController
 @RequestMapping("/api/v1/transferencias")
 @AllArgsConstructor
-@Tag(name = "Transferencias", description = "Transferencias entre cuentas")
+@Tag(name = "Transfers-controller", description = "transferencias, depositos y retiros")
 public class TransactionController {
 
-    private final ITransactionService transactionService;
+        private final ITransactionService transactionService;
 
-    @PostMapping
-    @Operation(summary = "Realizar una transferencia",
-            description = "Transfiere un monto de una cuenta propia a una cuenta destino de otro usuario, aplicando el tipo de cambio cuando las divisas difieren.")
-    @ApiResponses({
-            @ApiResponse(responseCode = "201", description = "Transferencia realizada",
-                    content = @Content(schema = @Schema(implementation = ComprobanteResponse.class))),
-            @ApiResponse(responseCode = "400", description = "Datos inválidos o cuenta bloqueada",
-                    content = @Content(schema = @Schema(implementation = ErrorDetail.class))),
-            @ApiResponse(responseCode = "403", description = "La cuenta de origen no pertenece al usuario autenticado",
-                    content = @Content(schema = @Schema(implementation = ErrorDetail.class))),
-            @ApiResponse(responseCode = "404", description = "Cuenta no encontrada",
-                    content = @Content(schema = @Schema(implementation = ErrorDetail.class))),
-            @ApiResponse(responseCode = "422", description = "Saldo insuficiente",
-                    content = @Content(schema = @Schema(implementation = ErrorDetail.class)))
-    })
-    public ResponseEntity<ComprobanteResponse> performTransaction(
-            @Valid @RequestBody TransactionRequest request) {
+        @PostMapping
+        @Operation(summary = "Realizar una transferencia", description = "Transfiere un monto de una cuenta propia a una cuenta destino de otro usuario, aplicando el tipo de cambio cuando las divisas difieren.")
+        @ApiResponses({
+                        @ApiResponse(responseCode = "201", description = "Transferencia realizada", content = @Content(schema = @Schema(implementation = ComprobanteResponse.class))),
+                        @ApiResponse(responseCode = "400", description = "Datos inválidos o cuenta bloqueada", content = @Content(schema = @Schema(implementation = ErrorDetail.class))),
+                        @ApiResponse(responseCode = "403", description = "La cuenta de origen no pertenece al usuario autenticado", content = @Content(schema = @Schema(implementation = ErrorDetail.class))),
+                        @ApiResponse(responseCode = "404", description = "Cuenta no encontrada", content = @Content(schema = @Schema(implementation = ErrorDetail.class))),
+                        @ApiResponse(responseCode = "422", description = "Saldo insuficiente", content = @Content(schema = @Schema(implementation = ErrorDetail.class)))
+        })
+        public ResponseEntity<ComprobanteResponse> performTransfer(
+                        @Valid @RequestBody TransactionRequest request) {
 
-        AuthenticatedUser authenticatedUser = AuthenticatedUserProvider.getAuthenticatedUser();
+                AuthenticatedUser authenticatedUser = AuthenticatedUserProvider.getAuthenticatedUser();
 
-        ComprobanteResponse comprobante =
-                transactionService.performTransaction(authenticatedUser.id(), request);
+                ComprobanteResponse comprobante = transactionService.performTransfer(authenticatedUser.id(),
+                                request);
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(comprobante);
-    }
+                return ResponseEntity.status(HttpStatus.CREATED).body(comprobante);
+        }
 
         @GetMapping("/{numeroCuenta}")
-    public List<TransactionHistResponse> getTransactionHistory(@PathVariable String numeroCuenta){
+        public List<TransactionHistResponse> getTransactionHistory(@PathVariable String numeroCuenta) {
                 return transactionService.getTransactionsHistory(numeroCuenta);
-    }
-    
+        }
+
+        @PostMapping("/deposits")
+        @Operation(summary = "Realizar un depósito en efectivo", description = "Deposita un monto en una cuenta propia del usuario autenticado.")
+        @ApiResponses({
+                        @ApiResponse(responseCode = "201", description = "Depósito realizado", content = @Content(schema = @Schema(implementation = ComprobanteResponse.class))),
+                        @ApiResponse(responseCode = "400", description = "Datos inválidos o cuenta bloqueada", content = @Content(schema = @Schema(implementation = ErrorDetail.class))),
+                        @ApiResponse(responseCode = "403", description = "La cuenta no pertenece al usuario autenticado", content = @Content(schema = @Schema(implementation = ErrorDetail.class))),
+                        @ApiResponse(responseCode = "404", description = "Cuenta no encontrada", content = @Content(schema = @Schema(implementation = ErrorDetail.class)))
+        })
+        public ResponseEntity<ComprobanteResponse> performDeposit(
+                        @Valid @RequestBody CashMovementRequest request) {
+
+                AuthenticatedUser authenticatedUser = AuthenticatedUserProvider.getAuthenticatedUser();
+
+                ComprobanteResponse comprobante = transactionService.performDeposit(authenticatedUser.id(), request);
+
+                return ResponseEntity.status(HttpStatus.CREATED).body(comprobante);
+        }
+
+        @PostMapping("/withdrawals")
+        @Operation(summary = "Realizar un retiro en efectivo", description = "Retira un monto de una cuenta propia del usuario autenticado.")
+                @ApiResponses({
+                        @ApiResponse(responseCode = "201", description = "Retiro realizado", content = @Content(schema = @Schema(implementation = ComprobanteResponse.class))),
+                        @ApiResponse(responseCode = "400", description = "Datos inválidos o cuenta bloqueada", content = @Content(schema = @Schema(implementation = ErrorDetail.class))),
+                        @ApiResponse(responseCode = "403", description = "La cuenta no pertenece al usuario autenticado", content = @Content(schema = @Schema(implementation = ErrorDetail.class))),
+                        @ApiResponse(responseCode = "404", description = "Cuenta no encontrada", content = @Content(schema = @Schema(implementation = ErrorDetail.class))),
+                        @ApiResponse(responseCode = "422", description = "Saldo insuficiente", content = @Content(schema = @Schema(implementation = ErrorDetail.class)))
+        })
+        public ResponseEntity<ComprobanteResponse> performWithdrawal(@Valid @RequestBody WithdrawalRequest request) {
+
+                AuthenticatedUser authenticatedUser = AuthenticatedUserProvider.getAuthenticatedUser();
+
+                ComprobanteResponse comprobante = transactionService.performWithdrawal(authenticatedUser.id(), request);
+
+                return ResponseEntity.status(HttpStatus.CREATED).body(comprobante);
+        }
 }
