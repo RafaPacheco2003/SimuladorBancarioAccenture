@@ -33,6 +33,14 @@ docker compose -f compose.codespaces.yaml up   # Codespaces
 - **Local:** `compose.yaml`.
 - **GitHub Codespaces:** `compose.codespaces.yaml` (do not use it locally).
 
+## Running with VS Code Dev Containers
+
+Requires the [Dev Containers](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers) extension and Docker running.
+
+1. Copy `.env.example`, rename it to `.env` and set your credentials.
+2. Open the project in VS Code and run **Dev Containers: Reopen in Container** from the command palette (`F1`).
+3. VS Code builds the container and installs the Java extensions automatically. API available at `http://localhost:8080`.
+
 ## API Documentation
 
 Once the application is running (default port `8080`):
