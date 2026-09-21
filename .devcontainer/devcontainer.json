@@ -1,0 +1,31 @@
+{
+  "name": "SimuladorBancarioAccenture",
+  "dockerComposeFile": [
+    "../compose.yaml"
+  ],
+  "service": "app",
+  "workspaceFolder": "/app",
+  "shutdownAction": "stopCompose",
+  "postCreateCommand": "apk add --no-cache openjdk21-jdk git",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "vscjava.vscode-java-pack",
+        "vmware.vscode-boot-dev-pack"
+      ],
+      "settings": {
+        "java.jdt.ls.java.home": "/usr/lib/jvm/java-21-openjdk",
+        "java.configuration.runtimes": [
+          {
+            "name": "JavaSE-17",
+            "path": "/opt/java/openjdk",
+            "default": true
+          }
+        ],
+        "java.import.maven.enabled": true,
+        "maven.executable.path": "/usr/bin/mvn"
+      }
+    }
+  },
+  "remoteUser": "root"
+}
