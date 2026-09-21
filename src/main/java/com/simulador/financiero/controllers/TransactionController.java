@@ -31,17 +31,16 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
-import com.simulador.financiero.entities.AccountEntity;
 
 @RestController
-@RequestMapping("/api/v1/transferencias")
+@RequestMapping("/api/v1/transactions")
 @AllArgsConstructor
 @Tag(name = "Transfers-controller", description = "transferencias, depositos y retiros")
 public class TransactionController {
 
         private final ITransactionService transactionService;
 
-        @PostMapping
+        @PostMapping("/transfers")
         @Operation(summary = "Realizar una transferencia", description = "Transfiere un monto de una cuenta propia a una cuenta destino de otro usuario, aplicando el tipo de cambio cuando las divisas difieren.")
         @ApiResponses({
                         @ApiResponse(responseCode = "201", description = "Transferencia realizada", content = @Content(schema = @Schema(implementation = ComprobanteResponse.class))),

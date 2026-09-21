@@ -158,7 +158,8 @@ public class GlobalExceptionHandler {
                                 LocalDateTime.now(),
                                 500,
                                 "Internal Server Error",
-                                "An unexpected error occurred",
+                                // "An unexpected error occurred",
+                                ex.getMessage(),
                                 request.getRequestURI());
 
                 return ResponseEntity.status(500).body(errorDetail);
