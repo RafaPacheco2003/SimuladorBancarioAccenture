@@ -19,6 +19,7 @@ import com.simulador.financiero.repositories.TransactionRepository;
 import com.simulador.financiero.services.IAccountService;
 import com.simulador.financiero.services.IExchangeRateService;
 import com.simulador.financiero.services.ITransactionService;
+import com.simulador.financiero.validators.AccountValidator;
 import com.simulador.financiero.validators.TransferValidator;
 
 @Service
@@ -45,11 +46,11 @@ public class TransactionServiceImpl implements ITransactionService {
         public ComprobanteResponse performTransfer(Long userId, TransactionRequest request) {
 
                 AccountEntity origin = accountService.findByNumber(request.originAccount());
-                TransferValidator.validateIsActive(origin);
-                TransferValidator.validateOwnership(origin, userId);
+                AccountValidator.validateIsActive(origin);
+                AccountValidator.validateOwnership(origin, userId);
 
                 AccountEntity destination = accountService.findByNumber(request.destinationAccount());
-                TransferValidator.validateIsActive(destination);
+                AccountValidator.validateIsActive(destination);
                 TransferValidator.validateDifferentOwner(origin, destination);
 
                 TransferValidator.validateDifferentAccounts(origin.getNumber(), destination.getNumber());
@@ -77,8 +78,8 @@ public class TransactionServiceImpl implements ITransactionService {
         public ComprobanteResponse performDeposit(Long userId, CashMovementRequest request) {
 
                 AccountEntity account = accountService.findByNumber(request.Account());
-                TransferValidator.validateIsActive(account);
-                TransferValidator.validateOwnership(account, userId);
+                AccountValidator.validateIsActive(account);
+                AccountValidator.validateOwnership(account, userId);
                 TransferValidator.validateAmount(request.amount());
 
                 accountService.deposit(account, request.amount());
@@ -95,8 +96,8 @@ public class TransactionServiceImpl implements ITransactionService {
         public ComprobanteResponse performWithdrawal(Long userId, WithdrawalRequest request) {
                 
                 AccountEntity account = accountService.findByNumber(request.Account());
-                TransferValidator.validateOwnership(account, userId);
-                TransferValidator.validateIsActive(account);
+                AccountValidator.validateOwnership(account, userId);
+                AccountValidator.validateIsActive(account);
                 TransferValidator.validateAmount(request.Amount());
                 TransferValidator.validateSufficientBalance(account, request.Amount());
                 
