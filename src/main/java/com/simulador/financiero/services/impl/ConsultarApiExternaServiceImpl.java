@@ -1,5 +1,7 @@
 package com.simulador.financiero.services.impl;
 
+import java.util.Locale;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -64,9 +66,13 @@ public class ConsultarApiExternaServiceImpl implements IConsultarApiExternaServi
       throw new ResourceNotFoundException(ExceptionMessageConstants.STOCK_SYMBOL_NOT_FOUND);
     }
 
-    StocksEntity entity = stockRepository.findByTicker(quote.symbol())
+    String normalizedTicker = quote.symbol().trim().toUpperCase(Locale.ROOT);
+
+    StocksEntity entity = stockRepository.findByTickerIgnoreCase(normalizedTicker)
         .map(existing -> apiExternaMapper.updateEntity(existing, quote))
         .orElseGet(() -> apiExternaMapper.toEntity(quote));
+
+    entity.setTicker(normalizedTicker);
 
     StocksEntity saved = stockRepository.save(entity);
 
