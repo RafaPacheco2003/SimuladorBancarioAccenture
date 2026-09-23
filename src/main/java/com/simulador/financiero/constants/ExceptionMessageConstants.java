@@ -24,6 +24,10 @@ public class ExceptionMessageConstants {
 
     public static final String UNSUPPORTED_EXCHANGE_RATE = "No existe tipo de cambio configurado para las divisas indicadas.";
 
+    public static final String STOCK_SYMBOL_NOT_FOUND = "No se encontró información para el símbolo bursátil indicado.";
+
+    public static final String EXTERNAL_API_ERROR = "Error al consultar la API externa de cotizaciones.";
+
     private ExceptionMessageConstants() {
         throw new AssertionError("Clase utilitaria, no debe ser instanciada");
     }

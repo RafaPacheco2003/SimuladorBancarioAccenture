@@ -1,14 +1,14 @@
 package com.simulador.financiero.repositories;
 
-import com.simulador.financiero.entities.AccountEntity;
-
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-@Repository
-public interface AccountRepository extends JpaRepository<AccountEntity, String> {
+import com.simulador.financiero.entities.StocksEntity;
 
-    Optional<AccountEntity> findByUser_Email(String email);
+@Repository
+public interface StockRespository extends JpaRepository<StocksEntity, Long> {
+
+    Optional<StocksEntity> findByTickerIgnoreCase(String ticker);
 }
