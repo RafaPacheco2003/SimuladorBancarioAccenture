@@ -5,9 +5,8 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.simulador.financiero.DTOs.response.PortfolioSummaryResponse;
+import com.simulador.financiero.DTOs.response.ActivePositionResponse;
 import com.simulador.financiero.entities.AccountEntity;
-import com.simulador.financiero.entities.ActionEntity;
 import com.simulador.financiero.mappers.PortfolioMapper;
 import com.simulador.financiero.repositories.ActionRepository;
 import com.simulador.financiero.services.IAccountService;
@@ -32,11 +31,12 @@ public class PortfolioServiceImpl implements IPortfolioService {
 
     @Override
     @Transactional(readOnly = true)
-    public PortfolioSummaryResponse getPortfolioSummary(Long userId, String accountNumber) {
+    public List<ActivePositionResponse> getActivePositions(Long userId, String accountNumber) {
         AccountEntity account = accountService.findByNumber(accountNumber);
         AccountValidator.validateOwnership(account, userId);
 
-        List<ActionEntity> actions = actionRepository.findByAccount(account);
-        return portfolioMapper.toSummary(account, actions);
+        return actionRepository.findByAccount(account).stream()
+                .map(portfolioMapper::toPosition)
+                .toList();
     }
 }

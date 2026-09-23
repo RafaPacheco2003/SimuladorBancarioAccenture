@@ -2,19 +2,16 @@ package com.simulador.financiero.mappers;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Component;
 
-import com.simulador.financiero.DTOs.response.PortfolioSummaryResponse;
-import com.simulador.financiero.entities.AccountEntity;
+import com.simulador.financiero.DTOs.response.ActivePositionResponse;
 import com.simulador.financiero.entities.ActionEntity;
 
 @Component
 public class PortfolioMapper {
 
-    public PortfolioSummaryResponse.Position toPosition(ActionEntity action) {
+    public ActivePositionResponse toPosition(ActionEntity action) {
         BigDecimal quantity = BigDecimal.valueOf(action.getQuantity());
         BigDecimal averageBuyPrice = action.getAverage();
         BigDecimal currentPrice = action.getStock().getCurrentPrice();
@@ -23,8 +20,7 @@ public class PortfolioMapper {
         BigDecimal costBasis = averageBuyPrice.multiply(quantity);
         BigDecimal gainLoss = currentValue.subtract(costBasis);
 
-
-        return new PortfolioSummaryResponse.Position(
+        return new ActivePositionResponse(
                 action.getStock().getTicker(),
                 action.getStock().getCompanyName(),
                 action.getQuantity(),
@@ -33,28 +29,6 @@ public class PortfolioMapper {
                 currentValue,
                 gainLoss,
                 percentageOf(gainLoss, costBasis));
-    }
-
-    public PortfolioSummaryResponse toSummary(AccountEntity account, List<ActionEntity> actions) {
-        List<PortfolioSummaryResponse.Position> positions = actions.stream()
-                .map(this::toPosition)
-                .collect(Collectors.toList());
-
-        BigDecimal investedValue = positions.stream()
-                .map(PortfolioSummaryResponse.Position::currentValue)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
-
-        BigDecimal totalGainLoss = positions.stream()
-                .map(PortfolioSummaryResponse.Position::gainLoss)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
-
-        BigDecimal totalCostBasis = investedValue.subtract(totalGainLoss);
-
-        return new PortfolioSummaryResponse(
-                positions,
-                investedValue,
-                account.getBalance(),
-                percentageOf(totalGainLoss, totalCostBasis));
     }
 
     private BigDecimal percentageOf(BigDecimal amount, BigDecimal base) {

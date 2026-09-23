@@ -1,9 +1,11 @@
 package com.simulador.financiero.services;
 
-import com.simulador.financiero.DTOs.response.PortfolioSummaryResponse;
+import java.util.List;
+
+import com.simulador.financiero.DTOs.response.ActivePositionResponse;
 
 public interface IPortfolioService {
 
-    PortfolioSummaryResponse getPortfolioSummary(Long userId, String accountNumber);
+    List<ActivePositionResponse> getActivePositions(Long userId, String accountNumber);
 
 }
