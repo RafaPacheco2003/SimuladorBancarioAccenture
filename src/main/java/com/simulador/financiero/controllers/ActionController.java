@@ -28,8 +28,4 @@ public class ActionController {
         return actionService.buyAction(ticker,quantity,accountNumber);
     }
 
-    // @GetMapping("/actions")
-    // public List<ActionEntity> getAction(){
-    //     return actionRepository.findAll();
-    // }
 }

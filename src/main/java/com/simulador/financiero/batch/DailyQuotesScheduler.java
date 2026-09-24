@@ -6,6 +6,8 @@ import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.JobParametersBuilder;
 import org.springframework.batch.core.launch.JobLauncher;
+import org.springframework.boot.ApplicationArguments;
+import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -17,7 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 @ConditionalOnProperty(
         name = "app.batch.scheduler.enabled",
         havingValue = "true")
-public class DailyQuotesScheduler {
+public class DailyQuotesScheduler implements ApplicationRunner {
 
     private final JobLauncher jobLauncher;
     private final Job dailyQuotesJob;
@@ -37,6 +39,17 @@ public class DailyQuotesScheduler {
             zone = "${app.batch.scheduler.zone:UTC}")
     public void runDailyQuotesJob() {
 
+        launchDailyQuotesJob("programado");
+    }
+
+    @Override
+    public void run(ApplicationArguments args) {
+
+        launchDailyQuotesJob("inicial");
+    }
+
+    private void launchDailyQuotesJob(String executionType) {
+
         JobParameters parameters = new JobParametersBuilder()
                 .addLong(
                         "execution.timestamp",
@@ -44,13 +57,14 @@ public class DailyQuotesScheduler {
                 .toJobParameters();
 
         try {
-            log.info("Iniciando Job diario de cotizaciones");
+            log.info("Iniciando Job {} de cotizaciones", executionType);
 
             jobLauncher.run(dailyQuotesJob, parameters);
 
         } catch (Exception exception) {
             log.error(
-                    "No se pudo iniciar el Job diario de cotizaciones",
+                    "No se pudo iniciar el Job {} de cotizaciones",
+                    executionType,
                     exception);
         }
     }

@@ -69,8 +69,8 @@ public class TradingOrdersService implements ITradingOrderService {
 
     private AccountEntity getOwnedActiveAccount(Long userId, String accountNumber) {
         AccountEntity account = accountService.findByNumber(accountNumber);
-        TransferValidator.validateOwnership(account, userId);
-        TransferValidator.validateIsActive(account);
+        TradingOrderValidator.validateOwnership(account, userId);
+        TradingOrderValidator.validateIsActive(account);
         return account;
     }
 
