@@ -10,6 +10,8 @@ import com.simulador.financiero.Exceptions.BadRequestException;
 import com.simulador.financiero.account.Currency;
 import com.simulador.financiero.constants.ExceptionMessageConstants;
 
+import jakarta.transaction.Transactional;
+
 @Service
 public class ExchangeRateService implements IExchangeRateService {
 
@@ -17,16 +19,22 @@ public class ExchangeRateService implements IExchangeRateService {
     private static final int AMOUNT_SCALE = 2;
 
     private final BigDecimal mxnToUsd;
-    private final BigDecimal usdToMxn;
+  
+
+    private BigDecimal usdMxn;
+
+    private ConsultApiExchangeService consultApiExchangeService;
+
 
     public ExchangeRateService(
             @Value("${app.exchange.mxn-usd:0.055000}") BigDecimal mxnToUsd,
-            @Value("${app.exchange.usd-mxn:18.000000}") BigDecimal usdToMxn) {
+        ConsultApiExchangeService consultApiExchangeService) {
         this.mxnToUsd = mxnToUsd;
-        this.usdToMxn = usdToMxn;
+        this.consultApiExchangeService = consultApiExchangeService;
     }
-
+    
     @Override
+    @Transactional 
     public BigDecimal exchangeRate(Currency origin, Currency destination) {
 
         if (origin == destination) {
@@ -37,8 +45,10 @@ public class ExchangeRateService implements IExchangeRateService {
             return mxnToUsd.setScale(RATE_SCALE, RoundingMode.HALF_UP);
         }
 
+
+        usdMxn = consultApiExchangeService.consultarApi();
         if (origin == Currency.USD && destination == Currency.MXN) {
-            return usdToMxn.setScale(RATE_SCALE, RoundingMode.HALF_UP);
+            return usdMxn.setScale(RATE_SCALE, RoundingMode.HALF_UP);
         }
 
         throw new BadRequestException(ExceptionMessageConstants.UNSUPPORTED_EXCHANGE_RATE);
