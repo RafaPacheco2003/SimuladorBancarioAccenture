@@ -10,6 +10,7 @@ import com.simulador.financiero.DTOs.request.TradingOrderRequest;
 import com.simulador.financiero.DTOs.response.TradingOrderResponse;
 import com.simulador.financiero.Exceptions.BadRequestException;
 import com.simulador.financiero.Exceptions.ResourceNotFoundException;
+import com.simulador.financiero.account.Currency;
 import com.simulador.financiero.constants.ExceptionMessageConstants;
 import com.simulador.financiero.entities.AccountEntity;
 import com.simulador.financiero.entities.ActionEntity;
@@ -20,7 +21,6 @@ import com.simulador.financiero.repositories.ActionRepository;
 import com.simulador.financiero.repositories.StockRespository;
 import com.simulador.financiero.repositories.TradingOrdersRepository;
 import com.simulador.financiero.validators.TradingOrderValidator;
-import com.simulador.financiero.validators.TransferValidator;
 
 @Service
 public class TradingOrdersService implements ITradingOrderService {
@@ -30,18 +30,21 @@ public class TradingOrdersService implements ITradingOrderService {
     private final ActionRepository actionRepository;
     private final TradingOrdersRepository tradingOrdersRepository;
     private final TradingOrderMapper tradingOrderMapper;
+    private final IExchangeRateService exchangeRateService;
 
     public TradingOrdersService(
             IAccountService accountService,
             StockRespository stockRepository,
             ActionRepository actionRepository,
             TradingOrdersRepository tradingOrdersRepository,
-            TradingOrderMapper tradingOrderMapper) {
+            TradingOrderMapper tradingOrderMapper,
+            IExchangeRateService exchangeRateService) {
         this.accountService = accountService;
         this.stockRepository = stockRepository;
         this.actionRepository = actionRepository;
         this.tradingOrdersRepository = tradingOrdersRepository;
         this.tradingOrderMapper = tradingOrderMapper;
+        this.exchangeRateService = exchangeRateService;
     }
 
     @Override
@@ -59,7 +62,9 @@ public class TradingOrdersService implements ITradingOrderService {
         position.setQuantity(position.getQuantity() - request.quantity());
         actionRepository.save(position);
 
-        accountService.deposit(account, totalAmount);
+        BigDecimal amountForAccount = exchangeRateService.convert(
+                totalAmount, Currency.USD, account.getCurrency());
+        accountService.deposit(account, amountForAccount);
 
         TradingOrdersEntity order = tradingOrderMapper.toEntity(
                 account, stock, request.quantity(), executionPrice, totalAmount);
