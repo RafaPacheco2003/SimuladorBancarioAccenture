@@ -8,6 +8,8 @@ public class ExceptionMessageConstants {
 
     public static final String USERNAME_NOT_FOUND = "Usuario no encontrado.";
 
+    public static final String INVALID_CREDENTIALS = "Credenciales incorrectas.";
+
     public static final String ACCOUNT_NOT_FOUND = "Cuenta no encontrada.";
 
     public static final String ACCOUNT_NOT_ACTIVE = "La cuenta no está activa o se encuentra bloqueada.";
