@@ -59,7 +59,6 @@ public class AuthService {
                 request.getEmail(),
                 request.getPassword()));
 
-
         String token = jwtService.generateToken(user);
         return new LoginResponse(token, jwtService.getExpirationTime());
 

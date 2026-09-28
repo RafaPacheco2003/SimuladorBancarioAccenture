@@ -164,6 +164,7 @@ public class GlobalExceptionHandler {
                 return ResponseEntity.status(500).body(errorDetail);
         }
 
+
         @ExceptionHandler(BadRequestException.class)
         public ResponseEntity<ErrorDetail> handleBadRequestException(Exception exception, HttpServletRequest request) {
                 ErrorDetail errorDetail = new ErrorDetail(

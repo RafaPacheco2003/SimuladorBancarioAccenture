@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 
 import com.simulador.financiero.DTOs.request.CreateUserRequest;
 import com.simulador.financiero.DTOs.response.UserResponse;
+import com.simulador.financiero.Exceptions.DuplicateResourceException;
 import com.simulador.financiero.entities.UserEntity;
 import com.simulador.financiero.mappers.UserMapper;
 import com.simulador.financiero.repositories.UserRepository;
@@ -24,12 +25,19 @@ public class UserServiceImpl implements IUserService{
 
     @Override 
     public UserResponse createUser(CreateUserRequest request){
+        reviewCurp(request.curp());
         UserEntity userEntity = userMapper.toEntity(request);
         
         userEntity.setPassword(passwordEncoder.encode(request.password()));
 
         UserEntity userSaved = userRepository.save(userEntity);
         return userMapper.toResponse(userSaved);
+    }
+
+    public void reviewCurp(String curp){
+        if(userRepository.existsByCurp(curp)){
+            throw new DuplicateResourceException("El curp ya existe");
+        }
     }
 }
 

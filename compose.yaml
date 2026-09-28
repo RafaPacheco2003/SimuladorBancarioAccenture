@@ -9,6 +9,15 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/nova_bank
       SPRING_DATASOURCE_USERNAME: myuser
       SPRING_DATASOURCE_PASSWORD: mypassword
+      MAIL_HOST: smtp.gmail.com
+      MAIL_PORT: "587"
+      MAIL_USERNAME: ""
+      MAIL_PASSWORD: ""
+      MAIL_FROM: noreply@localhost
+      RECOVERY_PASS_URL: http://localhost:8080/reset-password
+      JWT_SECRET: dev-secret-change-me
+      JWT_EXPIRATION: "86400000"
+      ALPHA_VANTAGE_API_KEY: ""
     ports:
       - "8080:8080"
     volumes:

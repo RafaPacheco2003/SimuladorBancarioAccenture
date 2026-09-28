@@ -37,8 +37,8 @@ public class BatchConfig {
                 .map(String::trim)
                 .filter(symbol -> !symbol.isBlank())
                 .toList();
-    }
-
+        }
+    
     @Bean
     public Job dailyQuotesJob(JobRepository jobRepository, Step dailyQuotesStep) {
         return new JobBuilder("dailyQuotesJob", jobRepository)
@@ -67,7 +67,6 @@ public class BatchConfig {
     public ItemReader<String> symbolReader() {
         return new ListItemReader<>(symbols);
     }
-
     @Bean
     public ItemProcessor<String, String> symbolProcessor() {
         return symbol -> {
