@@ -28,7 +28,9 @@ public class ExceptionMessageConstants {
 
     public static final String EXTERNAL_API_ERROR = "Error al consultar la API externa de cotizaciones.";
 
-    public static final String TOO_MANY_REQUEST = "Alcanzaste el límite de peticiones";
+    public static final String TOO_MANY_REQUEST = "You have reached the request limit";
+
+    public static final String NOT_REPEAT_CURP = "This CURP already exists.";
 
     private ExceptionMessageConstants() {
         throw new AssertionError("Clase utilitaria, no debe ser instanciada");

@@ -5,6 +5,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.simulador.financiero.repositories.UserRepository;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -27,8 +29,8 @@ import lombok.Setter;
 @Entity
 @Getter 
 @AllArgsConstructor 
+@NoArgsConstructor 
 @Setter 
-@NoArgsConstructor
 @Builder 
 public class UserEntity {
 
@@ -61,7 +63,8 @@ public class UserEntity {
     private LocalDateTime createdAt;
 
 
-    public UserEntity(@NotBlank(message = "El nombre es obligatorio") String fullName,
+    public UserEntity(@NotBlank(message = "El nombre es obligatorio") 
+        String fullName,
         @NotBlank(message = "El CURP es obligatorio") String curp,
         @NotBlank(message = "El email es obligatorio") @Email(message = "El email debe tener un formato válido") String email,
         @NotBlank(message = "La contraseña es obligatoria") @Size(min = 8, message = "La contraseña debe tener mínimo 8 caracteres") String password,

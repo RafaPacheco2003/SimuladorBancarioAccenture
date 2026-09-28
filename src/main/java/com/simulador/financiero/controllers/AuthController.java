@@ -42,7 +42,6 @@ public class AuthController {
 
         UserResponse userResponse = userService.createUser(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(userResponse);
-
     }
 
     @PostMapping("/login")

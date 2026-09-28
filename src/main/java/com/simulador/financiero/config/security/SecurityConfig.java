@@ -21,7 +21,7 @@ import jakarta.servlet.http.HttpServletResponse;
 public class SecurityConfig {
 
     private final JwtAuthorizationFilter jwtAuthorizationFilter;
-    private final RañteLimitFilter rateLimitFilter;
+    private final RateLimitFilter rateLimitFilter;
 
     public SecurityConfig(
             JwtAuthorizationFilter jwtAuthorizationFilter,
