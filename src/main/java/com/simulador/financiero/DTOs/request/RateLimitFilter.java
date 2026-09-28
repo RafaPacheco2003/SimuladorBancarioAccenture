@@ -1,4 +1,4 @@
-package com.simulador.financiero.DTOs.request;
+/*package com.simulador.financiero.DTOs.request;
 
 import com.simulador.financiero.services.LimiterService;
 import jakarta.servlet.FilterChain;
@@ -30,3 +30,4 @@ public class RateLimitFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 }
+*/

@@ -30,7 +30,8 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             "/api/v1/batch/**",
             "/swagger-ui/**",
             "/swagger-ui.html",
-            "/v3/api-docs/**"
+            "/v3/api-docs/**",
+            "/pruebafinal/**"
     };
 
     public JwtAuthorizationFilter(JwtService jwtService, UserDetailsServiceImpl userDetailsServiceImpl) {

@@ -13,7 +13,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import com.simulador.financiero.DTOs.request.RateLimitFilter;
+//import com.simulador.financiero.DTOs.request.RateLimitFilter;
 
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -21,8 +21,13 @@ import jakarta.servlet.http.HttpServletResponse;
 public class SecurityConfig {
 
     private final JwtAuthorizationFilter jwtAuthorizationFilter;
-    private final RateLimitFilter rateLimitFilter;
+    //private final RateLimitFilter rateLimitFilter;
 
+    public SecurityConfig(JwtAuthorizationFilter jwtAuthorizationFilter) {
+        this.jwtAuthorizationFilter = jwtAuthorizationFilter;
+    }
+
+    /*
     public SecurityConfig(
             JwtAuthorizationFilter jwtAuthorizationFilter,
             RateLimitFilter rateLimitFilter) {
@@ -30,6 +35,7 @@ public class SecurityConfig {
         this.jwtAuthorizationFilter = jwtAuthorizationFilter;
         this.rateLimitFilter = rateLimitFilter;
     }
+        */
 
     private static final String[] PUBLIC_URLS = {
             "/api/v1/auth/**",
@@ -37,8 +43,11 @@ public class SecurityConfig {
             "/api/v1/batch/**",
             "/swagger-ui/**",
             "/swagger-ui.html",
-            "/v3/api-docs/**"
+            "/v3/api-docs/**",
+            "/pruebafinal/**"
     };
+
+
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -75,11 +84,11 @@ public class SecurityConfig {
 
                 .addFilterBefore(
                         jwtAuthorizationFilter,
-                        UsernamePasswordAuthenticationFilter.class)
-
-                .addFilterBefore(
-                        rateLimitFilter,
                         UsernamePasswordAuthenticationFilter.class);
+
+                //.addFilterBefore(
+                  //      rateLimitFilter,
+                  //      UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
