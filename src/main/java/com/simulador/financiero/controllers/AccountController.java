@@ -19,8 +19,7 @@ public class AccountController {
 
     private final IAccountService accountService;
 
-
-        @PostMapping
+        @PostMapping("/create")
         public String createAccount(@RequestBody CreateAccountRequest request) {
 
         AuthenticatedUser authenticatedUser =

@@ -36,7 +36,6 @@ public class SecurityConfig {
         this.rateLimitFilter = rateLimitFilter;
     }
         */
-
     private static final String[] PUBLIC_URLS = {
             "/api/v1/auth/**",
             "/api/v1/api-externa/**",
@@ -46,8 +45,6 @@ public class SecurityConfig {
             "/v3/api-docs/**",
             "/pruebafinal/**"
     };
-
-
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {

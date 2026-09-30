@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.simulador.financiero.Exceptions.DuplicateResourceException;
 import com.simulador.financiero.Exceptions.RequestDenied;
 import com.simulador.financiero.Exceptions.ResourceNotFoundException;
 import com.simulador.financiero.constants.ExceptionMessageConstants;
@@ -47,7 +48,7 @@ public class TempKeyService {
         UserEntity user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Usuario no encontrado con el correo: " + email));
-
+            
         Optional<TempTockenEntity> existing = tempTokenRepository.findByUser(user);
 
         if (existing.isPresent()) {
@@ -84,4 +85,10 @@ public class TempKeyService {
 
         return true;
     }
+
+   
+    
+
 }
+
+    

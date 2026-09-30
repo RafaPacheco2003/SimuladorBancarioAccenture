@@ -32,6 +32,10 @@ public class ExceptionMessageConstants {
 
     public static final String NOT_REPEAT_CURP = "This CURP already exists.";
 
+    public static final String BAD_REQUEST_EXCEPTION = "Not found";
+
+    public static final String METHOD__HTTP_DIFFERENT = "Método http diferente";
+
     private ExceptionMessageConstants() {
         throw new AssertionError("Clase utilitaria, no debe ser instanciada");
     }

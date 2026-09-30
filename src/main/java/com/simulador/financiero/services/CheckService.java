@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.simulador.financiero.DTOs.response.CheckResponse;
+import com.simulador.financiero.Exceptions.ResourceNotFoundException;
 import com.simulador.financiero.entities.AccountEntity;
 import com.simulador.financiero.repositories.CheckRepository;
 
@@ -19,7 +20,7 @@ public class CheckService {
 
     public CheckResponse getAccountBalance(String number)
     {
-        AccountEntity entity=checkRepo.findById(number).orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        AccountEntity entity=checkRepo.findById(number).orElseThrow(()-> new ResourceNotFoundException("Account not found"));
         return new CheckResponse(
             entity.getNumber(),
             entity.getCurrency(),
