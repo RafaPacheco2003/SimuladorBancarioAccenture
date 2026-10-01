@@ -106,6 +106,7 @@ public class GlobalExceptionHandler {
         public ResponseEntity<ErrorDetail> handleRequestDenied(
                         RequestDenied ex,
                         HttpServletRequest request) {
+                System.out.println("ENTRÓ AL HANDLER DE 429");
 
                 ErrorDetail errorDetail = new ErrorDetail(
                                 LocalDateTime.now(),

@@ -9,7 +9,7 @@ import com.simulador.financiero.DTOs.response.ConsultApiExchangeResponse;
 
 @Service 
 public class ConsultApiExchangeService {
-    
+        
     RestClient restClient= RestClient.builder()
         .baseUrl("https://api.frankfurter.dev")
         .build();
@@ -22,5 +22,5 @@ public class ConsultApiExchangeService {
         .body(ConsultApiExchangeResponse.class);
 
     return response != null ? response.rates().get("MXN") : null;
-    }   
+    }
 }

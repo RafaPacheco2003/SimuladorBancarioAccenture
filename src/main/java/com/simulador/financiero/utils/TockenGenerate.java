@@ -6,7 +6,6 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class TockenGenerate {
-
     private static final String CHARACTERS =
             "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
     private static final int TOKEN_LENGTH = 36;
@@ -20,7 +19,6 @@ public class TockenGenerate {
             int index = random.nextInt(CHARACTERS.length());
             token.append(CHARACTERS.charAt(index));
         }
-
         return token.toString();
     }
 }
