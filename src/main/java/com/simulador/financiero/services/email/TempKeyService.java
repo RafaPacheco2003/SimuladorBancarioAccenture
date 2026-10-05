@@ -1,5 +1,6 @@
 package com.simulador.financiero.services.email;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -9,7 +10,6 @@ import org.springframework.transaction.annotation.Transactional;
 import com.simulador.financiero.Exceptions.DuplicateResourceException;
 import com.simulador.financiero.Exceptions.RequestDenied;
 import com.simulador.financiero.Exceptions.ResourceNotFoundException;
-import com.simulador.financiero.constants.ExceptionMessageConstants;
 import com.simulador.financiero.entities.TempTockenEntity;
 import com.simulador.financiero.entities.UserEntity;
 import com.simulador.financiero.repositories.TempTokenRepository;
@@ -66,29 +66,44 @@ public class TempKeyService {
             }
         }
 
-        String verification = tockenGenerate.generateTempKey();
+    String verification = tockenGenerate.generateTempKey();
 
-        tempTokenRepository.save(TempTockenEntity.builder()
-                .token(verification)
-                .user(user)
-                .build());
+    if (existing.isPresent()) {
+        TempTockenEntity previous = existing.get();
 
-        AccountRecoveryData data = new AccountRecoveryData(
-                user.getFullName(),
-                RECOVERY_URL,
-                verification);
+        if (ResetTokenValidator.isWithinCooldown(previous.getCreatedAt())) {
+            throw new RequestDenied("Espera 1 minuto");
+        }
 
-        emailSender.send(
-                email,
-                new AccountRecoveryEmail(),
-                data);
+        previous.setToken(verification);
+        previous.setCreatedAt(LocalDateTime.now());
 
-        return true;
+        tempTokenRepository.save(previous);
+
+    } else {
+        tempTokenRepository.save(
+                TempTockenEntity.builder()
+                        .token(verification)
+                        .user(user)
+                        .createdAt(LocalDateTime.now())
+                        .build()
+        );
     }
 
-   
-    
+    AccountRecoveryData data = new AccountRecoveryData(
+            user.getFullName(),
+            RECOVERY_URL,
+            verification
+    );
 
+    emailSender.send(
+            email,
+            new AccountRecoveryEmail(),
+            data
+    );
+
+    return true;
+}
 }
 
     

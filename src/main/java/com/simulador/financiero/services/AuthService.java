@@ -17,8 +17,8 @@ import lombok.AllArgsConstructor;
 
 
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import com.simulador.financiero.DTOs.request.LoginRequest;
 import com.simulador.financiero.DTOs.response.LoginResponse;
@@ -51,16 +51,15 @@ public class AuthService {
     }
 
     public LoginResponse login(LoginRequest request) {
-        
-        UserEntity user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new UsernameNotFoundException(ExceptionMessageConstants.USERNAME_NOT_FOUND));
 
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                 request.getEmail(),
                 request.getPassword()));
 
+        UserEntity user = userRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new BadCredentialsException(ExceptionMessageConstants.INVALID_CREDENTIALS));
+
         String token = jwtService.generateToken(user);
         return new LoginResponse(token, jwtService.getExpirationTime());
-
     }
 }

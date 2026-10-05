@@ -21,6 +21,7 @@ import com.simulador.financiero.Exceptions.ForbiddenException;
 import com.simulador.financiero.Exceptions.InsufficientBalanceException;
 import com.simulador.financiero.Exceptions.RequestDenied;
 import com.simulador.financiero.Exceptions.ResourceNotFoundException;
+import com.simulador.financiero.constants.ExceptionMessageConstants;
 
 import jakarta.servlet.http.HttpServletRequest;
 
