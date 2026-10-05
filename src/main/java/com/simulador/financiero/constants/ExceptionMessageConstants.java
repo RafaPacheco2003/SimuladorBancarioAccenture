@@ -30,11 +30,13 @@ public class ExceptionMessageConstants {
 
     public static final String EXTERNAL_API_ERROR = "Error al consultar la API externa de cotizaciones.";
 
-    public static final String STOCK_NOT_FOUND = "Acción no encontrada.";
+    public static final String TOO_MANY_REQUEST = "You have reached the request limit";
 
-    public static final String NO_ACTIONS_FOR_TICKER = "La cuenta no posee acciones del ticker indicado.";
+    public static final String NOT_REPEAT_CURP = "This CURP already exists.";
 
-    public static final String INSUFFICIENT_ACTIONS = "La cuenta no posee suficientes acciones para realizar la venta.";
+    public static final String BAD_REQUEST_EXCEPTION = "Not found";
+
+    public static final String METHOD__HTTP_DIFFERENT = "Método http diferente";
 
     private ExceptionMessageConstants() {
         throw new AssertionError("Clase utilitaria, no debe ser instanciada");

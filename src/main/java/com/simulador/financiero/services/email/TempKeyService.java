@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.simulador.financiero.Exceptions.DuplicateResourceException;
 import com.simulador.financiero.Exceptions.RequestDenied;
 import com.simulador.financiero.Exceptions.ResourceNotFoundException;
 import com.simulador.financiero.entities.TempTockenEntity;
@@ -44,11 +45,26 @@ public class TempKeyService {
     @Transactional
     public boolean validateUser(String email) {
 
-    UserEntity user = userRepository.findByEmail(email)
-            .orElseThrow(() -> new ResourceNotFoundException(
-                    "Usuario no encontrado con el correo: " + email));
+        UserEntity user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Usuario no encontrado con el correo: " + email));
+            
+        Optional<TempTockenEntity> existing = tempTokenRepository.findByUser(user);
 
-    Optional<TempTockenEntity> existing = tempTokenRepository.findByUser(user);
+        if (existing.isPresent()) {
+            TempTockenEntity previous = existing.get();
+
+            if (ResetTokenValidator.isExpired(previous.getCreatedAt())) {
+                // Ya existe un token vencido: se elimina y se continúa para crear uno nuevo
+                tempTokenRepository.delete(previous);
+            } else if (ResetTokenValidator.isWithinCooldown(previous.getCreatedAt())) {
+                // Token aún vigente y solicitado hace menos de 1 minuto: se rechaza
+                throw new RequestDenied(ExceptionMessageConstants.TOO_MANY_TOKEN_REQUESTS);
+            } else {
+                // Token aún vigente pero fuera del enfriamiento: se reemplaza por uno nuevo
+                tempTokenRepository.delete(previous);
+            }
+        }
 
     String verification = tockenGenerate.generateTempKey();
 
@@ -89,3 +105,5 @@ public class TempKeyService {
     return true;
 }
 }
+
+    

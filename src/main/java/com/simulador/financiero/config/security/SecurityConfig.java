@@ -13,36 +13,54 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+//import com.simulador.financiero.DTOs.request.RateLimitFilter;
+
 import jakarta.servlet.http.HttpServletResponse;
 
 @Configuration
 public class SecurityConfig {
 
     private final JwtAuthorizationFilter jwtAuthorizationFilter;
+    //private final RateLimitFilter rateLimitFilter;
 
     public SecurityConfig(JwtAuthorizationFilter jwtAuthorizationFilter) {
         this.jwtAuthorizationFilter = jwtAuthorizationFilter;
     }
 
+    /*
+    public SecurityConfig(
+            JwtAuthorizationFilter jwtAuthorizationFilter,
+            RateLimitFilter rateLimitFilter) {
+
+        this.jwtAuthorizationFilter = jwtAuthorizationFilter;
+        this.rateLimitFilter = rateLimitFilter;
+    }
+        */
     private static final String[] PUBLIC_URLS = {
             "/api/v1/auth/**",
             "/api/v1/api-externa/**",
             "/api/v1/batch/**",
             "/swagger-ui/**",
             "/swagger-ui.html",
-            "/v3/api-docs/**"
+            "/v3/api-docs/**",
+            "/pruebafinal/**"
     };
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+
         http
                 .csrf(AbstractHttpConfigurer::disable)
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+
+                .sessionManagement(session ->
+                        session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+
                 .authorizeHttpRequests(auth -> {
                     auth.requestMatchers(PUBLIC_URLS).permitAll();
                     auth.requestMatchers(HttpMethod.OPTIONS, "/**").permitAll();
                     auth.anyRequest().authenticated();
                 })
+
                 .exceptionHandling(exception -> exception
                         .authenticationEntryPoint((request, response, authException) -> {
                             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
@@ -60,7 +78,14 @@ public class SecurityConfig {
                                     {"success":false,"message":"Forbidden"}
                                     """);
                         }))
-                .addFilterBefore(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class);
+
+                .addFilterBefore(
+                        jwtAuthorizationFilter,
+                        UsernamePasswordAuthenticationFilter.class);
+
+                //.addFilterBefore(
+                  //      rateLimitFilter,
+                  //      UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
@@ -71,7 +96,9 @@ public class SecurityConfig {
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
+    public AuthenticationManager authenticationManager(
+            AuthenticationConfiguration config) throws Exception {
+
         return config.getAuthenticationManager();
     }
 }

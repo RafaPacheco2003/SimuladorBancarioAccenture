@@ -38,12 +38,12 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<UserResponse> createUser(
-            @Valid @RequestBody CreateUserRequest request) {
+        @Valid @RequestBody CreateUserRequest request) {
 
         UserResponse userResponse = userService.createUser(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(userResponse);
-
     }
+
 
     @PostMapping("/login")
     @Operation(summary = "iniciar sesion del usuario", description = "Usuario se logea con su email y su password.")

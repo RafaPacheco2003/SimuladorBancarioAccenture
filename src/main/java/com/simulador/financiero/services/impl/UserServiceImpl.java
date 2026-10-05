@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 
 import com.simulador.financiero.DTOs.request.CreateUserRequest;
 import com.simulador.financiero.DTOs.response.UserResponse;
+import com.simulador.financiero.Exceptions.DuplicateResourceException;
 import com.simulador.financiero.entities.UserEntity;
 import com.simulador.financiero.mappers.UserMapper;
 import com.simulador.financiero.repositories.UserRepository;
@@ -24,12 +25,46 @@ public class UserServiceImpl implements IUserService{
 
     @Override 
     public UserResponse createUser(CreateUserRequest request){
+        reviewCurp(request.curp());
+        reviewEmail(request.email());
         UserEntity userEntity = userMapper.toEntity(request);
         
         userEntity.setPassword(passwordEncoder.encode(request.password()));
 
         UserEntity userSaved = userRepository.save(userEntity);
         return userMapper.toResponse(userSaved);
+    }
+
+    public void reviewCurp(String curp) {
+    if (userRepository.existsByCurp(curp)) {
+        throw new DuplicateResourceException("El CURP ya está registrado");
+    }
+    }
+
+    public void reviewEmail(String email) {
+        if (userRepository.existsByEmail(email)) {
+            throw new DuplicateResourceException("El email ya está registrado");
+        }
+    }
+    public void reviewCurp(String curp, Long userId) {
+        userRepository.findByCurp(curp)
+            .ifPresent(user -> {
+                if (!user.getId().equals(userId)) {
+                    throw new DuplicateResourceException(
+                        "El CURP ya está registrado"
+                    );
+                }
+            });
+    }
+    public void reviewEmail(String email, Long userId) {
+        userRepository.findByEmail(email)
+            .ifPresent(user -> {
+                if (!user.getId().equals(userId)) {
+                    throw new DuplicateResourceException(
+                        "El email ya está registrado"
+                    );
+                }
+            });
     }
 }
 
