@@ -8,6 +8,8 @@ public class ExceptionMessageConstants {
 
     public static final String USERNAME_NOT_FOUND = "Usuario no encontrado.";
 
+    public static final String INVALID_CREDENTIALS = "Credenciales incorrectas.";
+
     public static final String ACCOUNT_NOT_FOUND = "Cuenta no encontrada.";
 
     public static final String ACCOUNT_NOT_ACTIVE = "La cuenta no está activa o se encuentra bloqueada.";
@@ -27,6 +29,12 @@ public class ExceptionMessageConstants {
     public static final String STOCK_SYMBOL_NOT_FOUND = "No se encontró información para el símbolo bursátil indicado.";
 
     public static final String EXTERNAL_API_ERROR = "Error al consultar la API externa de cotizaciones.";
+
+    public static final String STOCK_NOT_FOUND = "Acción no encontrada.";
+
+    public static final String NO_ACTIONS_FOR_TICKER = "La cuenta no posee acciones del ticker indicado.";
+
+    public static final String INSUFFICIENT_ACTIONS = "La cuenta no posee suficientes acciones para realizar la venta.";
 
     private ExceptionMessageConstants() {
         throw new AssertionError("Clase utilitaria, no debe ser instanciada");

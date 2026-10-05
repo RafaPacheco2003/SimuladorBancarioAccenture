@@ -27,9 +27,9 @@ public class ConsultApiExchangeController{
         this.exchangeRateService = exchangeRateService;
     }
 
-    @GetMapping()
-    public BigDecimal consultarApi(){
-        return consultApiExchangeService.consultarApi();
-    }
+    // @GetMapping()
+    // public BigDecimal consultarApi(){
+    //     return consultApiExchangeService.consultarApi();
+    // }
     
 }

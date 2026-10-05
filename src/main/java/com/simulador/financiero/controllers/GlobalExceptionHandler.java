@@ -19,6 +19,7 @@ import com.simulador.financiero.Exceptions.ForbiddenException;
 import com.simulador.financiero.Exceptions.InsufficientBalanceException;
 import com.simulador.financiero.Exceptions.RequestDenied;
 import com.simulador.financiero.Exceptions.ResourceNotFoundException;
+import com.simulador.financiero.constants.ExceptionMessageConstants;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -127,7 +128,7 @@ public class GlobalExceptionHandler {
                                 LocalDateTime.now(),
                                 401,
                                 "Unauthorized",
-                                ex.getMessage(),
+                                ExceptionMessageConstants.INVALID_CREDENTIALS,
                                 request.getRequestURI());
 
                 return ResponseEntity.status(401).body(errorDetail);
