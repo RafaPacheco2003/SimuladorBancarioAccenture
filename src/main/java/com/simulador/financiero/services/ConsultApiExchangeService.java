@@ -10,7 +10,7 @@ import com.simulador.financiero.account.Currency;
 
 @Service 
 public class ConsultApiExchangeService {
-    
+        
     RestClient restClient= RestClient.builder()
         .baseUrl("https://api.frankfurter.dev")
         .build();

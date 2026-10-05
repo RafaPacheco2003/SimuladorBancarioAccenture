@@ -1,5 +1,6 @@
 package com.simulador.financiero.services.email;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -8,7 +9,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.simulador.financiero.Exceptions.RequestDenied;
 import com.simulador.financiero.Exceptions.ResourceNotFoundException;
-import com.simulador.financiero.constants.ExceptionMessageConstants;
 import com.simulador.financiero.entities.TempTockenEntity;
 import com.simulador.financiero.entities.UserEntity;
 import com.simulador.financiero.repositories.TempTokenRepository;
@@ -44,44 +44,48 @@ public class TempKeyService {
     @Transactional
     public boolean validateUser(String email) {
 
-        UserEntity user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new ResourceNotFoundException(
-                        "Usuario no encontrado con el correo: " + email));
+    UserEntity user = userRepository.findByEmail(email)
+            .orElseThrow(() -> new ResourceNotFoundException(
+                    "Usuario no encontrado con el correo: " + email));
 
-        Optional<TempTockenEntity> existing = tempTokenRepository.findByUser(user);
+    Optional<TempTockenEntity> existing = tempTokenRepository.findByUser(user);
 
-        if (existing.isPresent()) {
-            TempTockenEntity previous = existing.get();
+    String verification = tockenGenerate.generateTempKey();
 
-            if (ResetTokenValidator.isExpired(previous.getCreatedAt())) {
-                // Ya existe un token vencido: se elimina y se continúa para crear uno nuevo
-                tempTokenRepository.delete(previous);
-            } else if (ResetTokenValidator.isWithinCooldown(previous.getCreatedAt())) {
-                // Token aún vigente y solicitado hace menos de 1 minuto: se rechaza
-                throw new RequestDenied(ExceptionMessageConstants.TOO_MANY_TOKEN_REQUESTS);
-            } else {
-                // Token aún vigente pero fuera del enfriamiento: se reemplaza por uno nuevo
-                tempTokenRepository.delete(previous);
-            }
+    if (existing.isPresent()) {
+        TempTockenEntity previous = existing.get();
+
+        if (ResetTokenValidator.isWithinCooldown(previous.getCreatedAt())) {
+            throw new RequestDenied("Espera 1 minuto");
         }
 
-        String verification = tockenGenerate.generateTempKey();
+        previous.setToken(verification);
+        previous.setCreatedAt(LocalDateTime.now());
 
-        tempTokenRepository.save(TempTockenEntity.builder()
-                .token(verification)
-                .user(user)
-                .build());
+        tempTokenRepository.save(previous);
 
-        AccountRecoveryData data = new AccountRecoveryData(
-                user.getFullName(),
-                RECOVERY_URL,
-                verification);
-
-        emailSender.send(
-                email,
-                new AccountRecoveryEmail(),
-                data);
-
-        return true;
+    } else {
+        tempTokenRepository.save(
+                TempTockenEntity.builder()
+                        .token(verification)
+                        .user(user)
+                        .createdAt(LocalDateTime.now())
+                        .build()
+        );
     }
+
+    AccountRecoveryData data = new AccountRecoveryData(
+            user.getFullName(),
+            RECOVERY_URL,
+            verification
+    );
+
+    emailSender.send(
+            email,
+            new AccountRecoveryEmail(),
+            data
+    );
+
+    return true;
+}
 }

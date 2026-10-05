@@ -4,7 +4,6 @@ import java.time.LocalDateTime;
 
 public class ApiResponse <T>{
    
-    
     private boolean success;
     private String message;
     private T data;
@@ -21,6 +20,4 @@ public class ApiResponse <T>{
         this.data = data;
         this.timestamp = timestamp;
     }
-
-
 }
