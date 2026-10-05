@@ -29,6 +29,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import com.simulador.financiero.Exceptions.BadRequestException;
 import com.simulador.financiero.config.security.JwtService;
 import com.simulador.financiero.constants.ConfigurationConstants;
+import com.simulador.financiero.constants.ExceptionMessageConstants;
 import com.simulador.financiero.entities.TempTockenEntity;
 import com.simulador.financiero.repositories.TempTokenRepository;
 
@@ -107,6 +108,18 @@ public class AuthServiceTest {
             .thenThrow(new BadCredentialsException("Credenciales inválidas"));
 
         assertThrows(BadCredentialsException.class, () -> authService.login(request));
+    }
+
+    @Test
+    public void deberiaRechazarLoginCuandoUsuarioNoExistaTrasAutenticar() {
+        LoginRequest request = new LoginRequest();
+        request.setEmail("nonexistent@gmail.com");
+        request.setPassword("123456");
+
+        when(userRepository.findByEmail("nonexistent@gmail.com")).thenReturn(Optional.empty());
+
+        BadCredentialsException ex = assertThrows(BadCredentialsException.class, () -> authService.login(request));
+        assertEquals(ExceptionMessageConstants.INVALID_CREDENTIALS, ex.getMessage());
     }
 
     @Test
