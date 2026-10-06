@@ -47,11 +47,6 @@ public class AccountService implements IAccountService {
 
     @Override
     public void withdraw(AccountEntity account, BigDecimal amount) {
-
-        if (account.getBalance().compareTo(amount) < 0) {
-            throw new InsufficientBalanceException("Insufficient balance");
-        }
-
         account.setBalance(account.getBalance().subtract(amount));
         accountRepository.save(account);
     }
