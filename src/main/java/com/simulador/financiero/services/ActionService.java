@@ -7,6 +7,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.simulador.financiero.Exceptions.InsufficientBalanceException;
 import com.simulador.financiero.Exceptions.ResourceNotFoundException;
 import com.simulador.financiero.entities.AccountEntity;
 import com.simulador.financiero.entities.ActionEntity;
@@ -66,7 +67,7 @@ public class ActionService {
                                 account.getCurrency());
 
                 if (account.getBalance().compareTo(totalForAccount) < 0) {
-                        throw new RuntimeException("Insufficient balance");
+                        throw new InsufficientBalanceException("Insufficient balance");
                 }
 
                 account.setBalance(account.getBalance().subtract(totalForAccount));

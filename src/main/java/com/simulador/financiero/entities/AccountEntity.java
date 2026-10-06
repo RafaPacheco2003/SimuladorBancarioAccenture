@@ -91,7 +91,7 @@ public class AccountEntity {
         }
 
         if (balance == null) {
-            balance = BigDecimal.valueOf(2000);
+            balance = BigDecimal.valueOf(0);
         }
     }
 }

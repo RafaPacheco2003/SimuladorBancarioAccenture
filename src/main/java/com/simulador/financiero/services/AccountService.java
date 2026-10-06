@@ -2,6 +2,7 @@ package com.simulador.financiero.services;
 
 import java.math.BigDecimal;
 
+import com.simulador.financiero.Exceptions.InsufficientBalanceException;
 import com.simulador.financiero.Exceptions.ResourceNotFoundException;
 import com.simulador.financiero.account.AccountType;
 import com.simulador.financiero.account.Currency;
@@ -46,6 +47,11 @@ public class AccountService implements IAccountService {
 
     @Override
     public void withdraw(AccountEntity account, BigDecimal amount) {
+
+        if (account.getBalance().compareTo(amount) < 0) {
+            throw new InsufficientBalanceException("Insufficient balance");
+        }
+
         account.setBalance(account.getBalance().subtract(amount));
         accountRepository.save(account);
     }
