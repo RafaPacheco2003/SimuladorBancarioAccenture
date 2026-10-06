@@ -38,6 +38,12 @@ public class ExceptionMessageConstants {
 
     public static final String METHOD__HTTP_DIFFERENT = "Método http diferente";
 
+    public static final String NO_ACTIONS_FOR_TICKER = "No existen acciones para este ticker";
+
+    public static final String STOCK_NOT_FOUND = "sin stock";
+
+    public static final String INSUFFICIENT_ACTIONS = "Cantidad de acciones insuficiente";
+
     private ExceptionMessageConstants() {
         throw new AssertionError("Clase utilitaria, no debe ser instanciada");
     }
