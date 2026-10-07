@@ -2,6 +2,7 @@ package com.simulador.financiero.services;
 
 import java.math.BigDecimal;
 
+import com.simulador.financiero.Exceptions.InsufficientBalanceException;
 import com.simulador.financiero.Exceptions.ResourceNotFoundException;
 import com.simulador.financiero.account.AccountType;
 import com.simulador.financiero.account.Currency;

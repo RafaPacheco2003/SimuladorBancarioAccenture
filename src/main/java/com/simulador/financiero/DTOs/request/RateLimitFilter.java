@@ -1,5 +1,6 @@
-/*package com.simulador.financiero.DTOs.request;
+package com.simulador.financiero.DTOs.request;
 
+import com.simulador.financiero.Exceptions.RequestDenied;
 import com.simulador.financiero.services.LimiterService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -25,9 +26,27 @@ public class RateLimitFilter extends OncePerRequestFilter {
             HttpServletResponse response,
             FilterChain filterChain) throws ServletException, IOException {
 
-        limiterService.allowRequest();
+        try {
+            limiterService.allowRequest();
 
-        filterChain.doFilter(request, response);
+            filterChain.doFilter(request, response);
+
+        } catch (RequestDenied ex) {
+
+            response.setStatus(429);
+            response.setContentType("application/json");
+
+            response.getWriter().write("""
+                    {
+                        "status": 429,
+                        "error": "Too Many Requests",
+                        "message": "%s",
+                        "path": "%s"
+                    }
+                    """.formatted(
+                            ex.getMessage(),
+                            request.getRequestURI()
+                    ));
+        }
     }
 }
-*/
