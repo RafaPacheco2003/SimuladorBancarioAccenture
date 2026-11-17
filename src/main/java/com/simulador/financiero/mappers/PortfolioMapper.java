@@ -5,7 +5,7 @@ import java.math.RoundingMode;
 
 import org.springframework.stereotype.Component;
 
-import com.simulador.financiero.DTOs.response.ActivePositionResponse;
+import com.simulador.financiero.dtos.response.ActivePositionResponse;
 import com.simulador.financiero.entities.ActionEntity;
 
 @Component

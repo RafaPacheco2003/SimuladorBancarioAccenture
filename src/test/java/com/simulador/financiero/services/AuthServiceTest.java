@@ -20,17 +20,17 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 
-import com.simulador.financiero.DTOs.request.LoginRequest;
-import com.simulador.financiero.DTOs.response.LoginResponse;
+import com.simulador.financiero.dtos.request.LoginRequest;
+import com.simulador.financiero.dtos.response.LoginResponse;
 import com.simulador.financiero.entities.UserEntity;
 import com.simulador.financiero.repositories.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import com.simulador.financiero.Exceptions.BadRequestException;
+import com.simulador.financiero.exceptions.BadRequestException;
 import com.simulador.financiero.config.security.JwtService;
 import com.simulador.financiero.constants.ConfigurationConstants;
 import com.simulador.financiero.constants.ExceptionMessageConstants;
-import com.simulador.financiero.entities.TempTockenEntity;
+import com.simulador.financiero.entities.TempTokenEntity;
 import com.simulador.financiero.repositories.TempTokenRepository;
 
 @ExtendWith(MockitoExtension.class)
@@ -128,7 +128,7 @@ public class AuthServiceTest {
         String newPassword = "newPassword456";
         String encodedPassword = "encodedPassword789";
 
-        TempTockenEntity tempToken = TempTockenEntity.builder().id(1L).token(token).user(user).build();
+        TempTokenEntity tempToken = TempTokenEntity.builder().id(1L).token(token).user(user).build();
 
         when(tempTokenRepository.findByToken(token)).thenReturn(Optional.of(tempToken));
         when(passwordEncoder.encode(newPassword)).thenReturn(encodedPassword);
@@ -145,7 +145,7 @@ public class AuthServiceTest {
         String token = "invalid-token-123";
         String newPassword = "newPassword";
 
-        TempTockenEntity tempToken = TempTockenEntity.builder().id(1L).token(token).user(user)
+        TempTokenEntity tempToken = TempTokenEntity.builder().id(1L).token(token).user(user)
                 .createdAt(LocalDateTime.now().minusMinutes((long) ConfigurationConstants.TOKEN_EXPIRATION_MINUTES + 3L))
                 .build();
 

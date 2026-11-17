@@ -3,8 +3,8 @@ package com.simulador.financiero.mappers;
 
 import javax.swing.text.html.parser.Entity;
 import org.springframework.stereotype.Component;
-import com.simulador.financiero.DTOs.request.CreateUserRequest;
-import com.simulador.financiero.DTOs.response.UserResponse;
+import com.simulador.financiero.dtos.request.CreateUserRequest;
+import com.simulador.financiero.dtos.response.UserResponse;
 import com.simulador.financiero.entities.UserEntity;
 
 @Component

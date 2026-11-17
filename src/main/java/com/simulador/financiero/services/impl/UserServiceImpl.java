@@ -3,9 +3,9 @@ package com.simulador.financiero.services.impl;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.simulador.financiero.DTOs.request.CreateUserRequest;
-import com.simulador.financiero.DTOs.response.UserResponse;
-import com.simulador.financiero.Exceptions.DuplicateResourceException;
+import com.simulador.financiero.dtos.request.CreateUserRequest;
+import com.simulador.financiero.dtos.response.UserResponse;
+import com.simulador.financiero.exceptions.DuplicateResourceException;
 import com.simulador.financiero.entities.UserEntity;
 import com.simulador.financiero.mappers.UserMapper;
 import com.simulador.financiero.repositories.UserRepository;
@@ -45,26 +45,6 @@ public class UserServiceImpl implements IUserService{
         if (userRepository.existsByEmail(email)) {
             throw new DuplicateResourceException("El email ya está registrado");
         }
-    }
-    public void reviewCurp(String curp, Long userId) {
-        userRepository.findByCurp(curp)
-            .ifPresent(user -> {
-                if (!user.getId().equals(userId)) {
-                    throw new DuplicateResourceException(
-                        "El CURP ya está registrado"
-                    );
-                }
-            });
-    }
-    public void reviewEmail(String email, Long userId) {
-        userRepository.findByEmail(email)
-            .ifPresent(user -> {
-                if (!user.getId().equals(userId)) {
-                    throw new DuplicateResourceException(
-                        "El email ya está registrado"
-                    );
-                }
-            });
     }
 }
 

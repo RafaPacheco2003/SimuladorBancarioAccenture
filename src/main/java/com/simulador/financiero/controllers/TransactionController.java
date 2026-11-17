@@ -13,15 +13,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.simulador.financiero.DTOs.request.CashMovementRequest;
-import com.simulador.financiero.DTOs.request.TransactionRequest;
-import com.simulador.financiero.DTOs.response.ComprobanteResponse;
-import com.simulador.financiero.DTOs.request.WithdrawalRequest;
-import com.simulador.financiero.DTOs.response.ErrorDetail;
-import com.simulador.financiero.DTOs.response.TransactionHistResponse;
+import com.simulador.financiero.dtos.request.CashMovementRequest;
+import com.simulador.financiero.dtos.request.TransactionRequest;
+import com.simulador.financiero.dtos.response.ComprobanteResponse;
+import com.simulador.financiero.dtos.request.WithdrawalRequest;
+import com.simulador.financiero.dtos.response.ErrorDetail;
+import com.simulador.financiero.dtos.response.TransactionHistResponse;
 import com.simulador.financiero.config.security.AuthenticatedUser;
 import com.simulador.financiero.services.ITransactionService;
-import com.simulador.financiero.utils.AuthenticatedUserProvider;
+import com.simulador.financiero.config.security.AuthenticatedUserProvider;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -62,7 +62,9 @@ public class TransactionController {
 
         @GetMapping("/{numeroCuenta}")
         public List<TransactionHistResponse> getTransactionHistory(@PathVariable String numeroCuenta) {
-                return transactionService.getTransactionsHistory(numeroCuenta);
+                AuthenticatedUser authenticatedUser = AuthenticatedUserProvider.getAuthenticatedUser();
+
+                return transactionService.getTransactionsHistory(authenticatedUser.id(), numeroCuenta);
         }
 
         @PostMapping("/deposits")

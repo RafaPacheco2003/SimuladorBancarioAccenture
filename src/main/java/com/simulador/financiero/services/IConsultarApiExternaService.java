@@ -1,6 +1,6 @@
 package com.simulador.financiero.services;
 
-import com.simulador.financiero.DTOs.response.StockResponse;
+import com.simulador.financiero.dtos.response.StockResponse;
 
 public interface IConsultarApiExternaService {
 

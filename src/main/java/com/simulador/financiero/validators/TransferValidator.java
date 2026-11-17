@@ -2,8 +2,8 @@ package com.simulador.financiero.validators;
 
 import java.math.BigDecimal;
 
-import com.simulador.financiero.Exceptions.BadRequestException;
-import com.simulador.financiero.Exceptions.InsufficientBalanceException;
+import com.simulador.financiero.exceptions.BadRequestException;
+import com.simulador.financiero.exceptions.InsufficientBalanceException;
 import com.simulador.financiero.constants.ExceptionMessageConstants;
 import com.simulador.financiero.entities.AccountEntity;
 

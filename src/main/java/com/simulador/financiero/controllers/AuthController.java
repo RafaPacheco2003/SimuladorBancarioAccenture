@@ -3,16 +3,18 @@ package com.simulador.financiero.controllers;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.simulador.financiero.DTOs.request.CreateUserRequest;
-import com.simulador.financiero.DTOs.request.LoginRequest;
-import com.simulador.financiero.DTOs.response.LoginResponse;
-import com.simulador.financiero.DTOs.response.UserResponse;
+import com.simulador.financiero.dtos.request.CreateUserRequest;
+import com.simulador.financiero.dtos.request.LoginRequest;
+import com.simulador.financiero.dtos.response.LoginResponse;
+import com.simulador.financiero.dtos.response.UserResponse;
 import com.simulador.financiero.services.AuthService;
 import com.simulador.financiero.services.IUserService;
+import com.simulador.financiero.services.email.TempKeyService;
+import com.simulador.financiero.dtos.request.TempKeyRequest;
 
-import com.simulador.financiero.DTOs.request.PasswordResetRequest;
-import com.simulador.financiero.DTOs.response.ErrorDetail;
-import com.simulador.financiero.DTOs.response.PasswordResetResponse;
+import com.simulador.financiero.dtos.request.PasswordResetRequest;
+import com.simulador.financiero.dtos.response.ErrorDetail;
+import com.simulador.financiero.dtos.response.PasswordResetResponse;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -35,6 +37,7 @@ import org.springframework.http.ResponseEntity;
 public class AuthController {
     private final AuthService authService;
     private final IUserService userService;
+    private final TempKeyService tempKeyService;
 
     @PostMapping("/register")
     public ResponseEntity<UserResponse> createUser(
@@ -55,6 +58,15 @@ public class AuthController {
         LoginResponse loginResponse = authService.login(request);
         return ResponseEntity.ok(loginResponse);
 
+    }
+
+    @PostMapping("/forgot-password")
+    public ResponseEntity<String> forgotPassword(
+            @Valid @RequestBody TempKeyRequest request) {
+
+        tempKeyService.validateUser(request.getEmail());
+
+        return ResponseEntity.ok("Token enviado correctamente");
     }
 
     @PostMapping("/reset-password")

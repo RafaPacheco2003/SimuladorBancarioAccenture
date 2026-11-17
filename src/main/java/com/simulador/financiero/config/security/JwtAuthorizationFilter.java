@@ -24,16 +24,6 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     private final UserDetailsServiceImpl userDetailsServiceImpl;
     private final AntPathMatcher pathMatcher = new AntPathMatcher();
 
-    private static final String[] PUBLIC_URLS = {
-            "/api/v1/auth/**",
-            "/api/v1/api-externa/**",
-            "/api/v1/batch/**",
-            "/swagger-ui/**",
-            "/swagger-ui.html",
-            "/v3/api-docs/**",
-            "/pruebafinal/**"
-    };
-
     public JwtAuthorizationFilter(JwtService jwtService, UserDetailsServiceImpl userDetailsServiceImpl) {
         this.jwtService = jwtService;
         this.userDetailsServiceImpl = userDetailsServiceImpl;
@@ -46,7 +36,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             @NonNull FilterChain filterChain) throws ServletException, IOException {
         String requestUri = request.getRequestURI();
 
-        boolean isPublicPath = Arrays.stream(PUBLIC_URLS)
+        boolean isPublicPath = Arrays.stream(SecurityConfig.PUBLIC_URLS)
                 .anyMatch(path -> pathMatcher.match(path, requestUri));
         if (isPublicPath) {
             filterChain.doFilter(request, response);

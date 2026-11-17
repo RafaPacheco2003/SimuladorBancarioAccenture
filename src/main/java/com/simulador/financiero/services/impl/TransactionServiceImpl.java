@@ -7,11 +7,11 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.simulador.financiero.DTOs.request.CashMovementRequest;
-import com.simulador.financiero.DTOs.request.TransactionRequest;
-import com.simulador.financiero.DTOs.request.WithdrawalRequest;
-import com.simulador.financiero.DTOs.response.ComprobanteResponse;
-import com.simulador.financiero.DTOs.response.TransactionHistResponse;
+import com.simulador.financiero.dtos.request.CashMovementRequest;
+import com.simulador.financiero.dtos.request.TransactionRequest;
+import com.simulador.financiero.dtos.request.WithdrawalRequest;
+import com.simulador.financiero.dtos.response.ComprobanteResponse;
+import com.simulador.financiero.dtos.response.TransactionHistResponse;
 import com.simulador.financiero.entities.AccountEntity;
 import com.simulador.financiero.entities.TransactionEntity;
 import com.simulador.financiero.mappers.TransactionMapper;
@@ -77,7 +77,7 @@ public class TransactionServiceImpl implements ITransactionService {
         @Transactional
         public ComprobanteResponse performDeposit(Long userId, CashMovementRequest request) {
 
-                AccountEntity account = accountService.findByNumber(request.Account());
+                AccountEntity account = accountService.findByNumber(request.account());
                 AccountValidator.validateIsActive(account);
                 AccountValidator.validateOwnership(account, userId);
                 TransferValidator.validateAmount(request.amount());
@@ -95,22 +95,25 @@ public class TransactionServiceImpl implements ITransactionService {
         @Transactional
         public ComprobanteResponse performWithdrawal(Long userId, WithdrawalRequest request) {
                 
-                AccountEntity account = accountService.findByNumber(request.Account());
+                AccountEntity account = accountService.findByNumber(request.account());
                 AccountValidator.validateOwnership(account, userId);
                 AccountValidator.validateIsActive(account);
-                TransferValidator.validateAmount(request.Amount());
-                TransferValidator.validateSufficientBalance(account, request.Amount());
+                TransferValidator.validateAmount(request.amount());
+                TransferValidator.validateSufficientBalance(account, request.amount());
                 
-                accountService.withdraw(account, request.Amount());
+                accountService.withdraw(account, request.amount());
 
-                TransactionEntity transaction = transactionMapper.toWithdrawal(account, request.Amount(), request.Concept());
+                TransactionEntity transaction = transactionMapper.toWithdrawal(account, request.amount(), request.concept());
                 
                 return transactionMapper.toComprobante(transactionRepository.save(transaction));
         }
                
         @Override
         @Transactional(readOnly = true)
-        public List<TransactionHistResponse> getTransactionsHistory(String accountNumber) {
+        public List<TransactionHistResponse> getTransactionsHistory(Long userId, String accountNumber) {
+                AccountEntity account = accountService.findByNumber(accountNumber);
+                AccountValidator.validateOwnership(account, userId);
+
                 return transactionRepository.findByOriginAccount_Number(accountNumber)
                                 .stream()
                                 .map(transactionMapper::toTransactionHist)

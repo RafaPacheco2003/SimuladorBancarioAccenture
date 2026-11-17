@@ -13,8 +13,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-//import com.simulador.financiero.DTOs.request.RateLimitFilter;
-
 import jakarta.servlet.http.HttpServletResponse;
 
 @Configuration
@@ -36,14 +34,11 @@ public class SecurityConfig {
         this.rateLimitFilter = rateLimitFilter;
     }
         */
-    private static final String[] PUBLIC_URLS = {
+    public static final String[] PUBLIC_URLS = {
             "/api/v1/auth/**",
-            "/api/v1/api-externa/**",
-            "/api/v1/batch/**",
             "/swagger-ui/**",
             "/swagger-ui.html",
-            "/v3/api-docs/**",
-            "/pruebafinal/**"
+            "/v3/api-docs/**"
     };
 
     @Bean

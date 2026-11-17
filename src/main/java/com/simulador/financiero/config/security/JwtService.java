@@ -4,6 +4,7 @@ import java.sql.Date;
 import java.util.function.Function;
 
 import javax.crypto.SecretKey;
+import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import com.simulador.financiero.entities.UserEntity;
@@ -19,6 +20,16 @@ public class JwtService {
 
     @Value("${jwt.expiration}")
     private long expirationTime;
+
+    @PostConstruct
+    void validateSecretKey() {
+        try {
+            getSignInKey();
+        } catch (RuntimeException e) {
+            throw new IllegalStateException(
+                    "jwt.secret (JWT_SECRET) must be a valid Base64 string of at least 256 bits", e);
+        }
+    }
 
     public String generateToken(UserEntity user){
         return buildToken(user, expirationTime);

@@ -5,7 +5,7 @@ import java.math.BigDecimal;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 
-import com.simulador.financiero.DTOs.response.ConsultApiExchangeResponse;
+import com.simulador.financiero.dtos.response.ConsultApiExchangeResponse;
 import com.simulador.financiero.account.Currency;
 
 @Service 

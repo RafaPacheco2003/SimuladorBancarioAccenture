@@ -3,6 +3,8 @@ package com.simulador.financiero.entities;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
+import com.simulador.financiero.exceptions.BadRequestException;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -41,7 +43,7 @@ public class StocksEntity {
     @PrePersist 
     public void verification(){
         if(currentPrice.compareTo(BigDecimal.ZERO)< 0){
-            throw new IllegalArgumentException("El precio debe ser mayor a 0");
+            throw new BadRequestException("El precio debe ser mayor a 0");
         }
 
     }

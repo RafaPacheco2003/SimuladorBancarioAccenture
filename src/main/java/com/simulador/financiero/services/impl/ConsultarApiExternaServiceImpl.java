@@ -7,15 +7,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import com.simulador.financiero.DTOs.external.GlobalQuoteApiResponse;
-import com.simulador.financiero.DTOs.external.GlobalQuoteDTO;
-import com.simulador.financiero.DTOs.response.StockResponse;
-import com.simulador.financiero.Exceptions.BadRequestException;
-import com.simulador.financiero.Exceptions.ResourceNotFoundException;
+import com.simulador.financiero.dtos.external.GlobalQuoteApiResponse;
+import com.simulador.financiero.dtos.external.GlobalQuoteDTO;
+import com.simulador.financiero.dtos.response.StockResponse;
+import com.simulador.financiero.exceptions.BadRequestException;
+import com.simulador.financiero.exceptions.ResourceNotFoundException;
 import com.simulador.financiero.constants.ExceptionMessageConstants;
 import com.simulador.financiero.entities.StocksEntity;
 import com.simulador.financiero.mappers.ApiExternaMapper;
-import com.simulador.financiero.repositories.StockRespository;
+import com.simulador.financiero.repositories.StockRepository;
 import com.simulador.financiero.services.IConsultarApiExternaService;
 
 @Service
@@ -24,14 +24,14 @@ public class ConsultarApiExternaServiceImpl implements IConsultarApiExternaServi
   private static final String FUNCTION_GLOBAL_QUOTE = "GLOBAL_QUOTE";
 
   private final RestTemplate restTemplate;
-  private final StockRespository stockRepository;
+  private final StockRepository stockRepository;
   private final ApiExternaMapper apiExternaMapper;
   private final String apiKey;
   private final String baseUrl;
 
   public ConsultarApiExternaServiceImpl(
       RestTemplate restTemplate,
-      StockRespository stockRepository,
+      StockRepository stockRepository,
       ApiExternaMapper apiExternaMapper,
       @Value("${app.alphavantage.api-key}") String apiKey,
       @Value("${app.alphavantage.base-url:https://www.alphavantage.co/query}") String baseUrl) {
