@@ -1,4 +1,4 @@
-package com.simulador.financiero;
+package com.simulador.financiero.repositories;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import com.simulador.financiero.entities.StocksEntity;
-import com.simulador.financiero.repositories.StockRespository;
 
 @DataJpaTest
 class StockRepositoryTest {

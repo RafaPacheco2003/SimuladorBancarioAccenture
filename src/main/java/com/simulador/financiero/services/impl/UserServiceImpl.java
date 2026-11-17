@@ -46,25 +46,5 @@ public class UserServiceImpl implements IUserService{
             throw new DuplicateResourceException("El email ya está registrado");
         }
     }
-    public void reviewCurp(String curp, Long userId) {
-        userRepository.findByCurp(curp)
-            .ifPresent(user -> {
-                if (!user.getId().equals(userId)) {
-                    throw new DuplicateResourceException(
-                        "El CURP ya está registrado"
-                    );
-                }
-            });
-    }
-    public void reviewEmail(String email, Long userId) {
-        userRepository.findByEmail(email)
-            .ifPresent(user -> {
-                if (!user.getId().equals(userId)) {
-                    throw new DuplicateResourceException(
-                        "El email ya está registrado"
-                    );
-                }
-            });
-    }
 }
 

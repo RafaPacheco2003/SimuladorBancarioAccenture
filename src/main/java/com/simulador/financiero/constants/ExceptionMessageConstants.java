@@ -4,10 +4,6 @@ public class ExceptionMessageConstants {
 
     public static final String TOKEN_INVALID_OR_EXPIRED = "Clave temporal inválida, vencida o ya utilizada.";
 
-    public static final String TOO_MANY_TOKEN_REQUESTS = "Máximo de solicitudes, espera 1 minuto";
-
-    public static final String USERNAME_NOT_FOUND = "Usuario no encontrado.";
-
     public static final String INVALID_CREDENTIALS = "Credenciales incorrectas.";
 
     public static final String ACCOUNT_NOT_FOUND = "Cuenta no encontrada.";
@@ -31,12 +27,6 @@ public class ExceptionMessageConstants {
     public static final String EXTERNAL_API_ERROR = "Error al consultar la API externa de cotizaciones.";
 
     public static final String TOO_MANY_REQUEST = "You have reached the request limit";
-
-    public static final String NOT_REPEAT_CURP = "This CURP already exists.";
-
-    public static final String BAD_REQUEST_EXCEPTION = "Not found";
-
-    public static final String METHOD__HTTP_DIFFERENT = "Método http diferente";
 
     public static final String NO_ACTIONS_FOR_TICKER = "No existen acciones para este ticker";
 

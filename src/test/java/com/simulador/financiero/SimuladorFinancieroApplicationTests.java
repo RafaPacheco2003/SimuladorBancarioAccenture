@@ -1,4 +1,3 @@
-/* 
 package com.simulador.financiero;
 
 import org.junit.jupiter.api.Test;
@@ -14,4 +13,3 @@ class SimuladorFinancieroApplicationTests {
 	}
 
 }
- */

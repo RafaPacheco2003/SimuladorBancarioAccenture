@@ -9,11 +9,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.FilterType;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.simulador.financiero.DTOs.request.PasswordResetRequest;
+import com.simulador.financiero.DTOs.request.RateLimitFilter;
+import com.simulador.financiero.config.security.JwtAuthorizationFilter;
 import com.simulador.financiero.Exceptions.BadRequestException;
 import com.simulador.financiero.constants.ExceptionMessageConstants;
 import com.simulador.financiero.services.AuthService;
@@ -23,7 +27,13 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(AuthController.class)
+@WebMvcTest(
+        controllers = AuthController.class,
+        // Filters are disabled below, so exclude their beans to avoid wiring
+        // dependencies (JwtService, LimiterService) unrelated to this slice.
+        excludeFilters = @ComponentScan.Filter(
+                type = FilterType.ASSIGNABLE_TYPE,
+                classes = { JwtAuthorizationFilter.class, RateLimitFilter.class }))
 @AutoConfigureMockMvc(addFilters = false)
 public class AuthControllerTest {
 

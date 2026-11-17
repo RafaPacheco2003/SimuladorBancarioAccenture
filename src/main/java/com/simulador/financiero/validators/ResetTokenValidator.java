@@ -11,11 +11,6 @@ public class ResetTokenValidator {
         return LocalDateTime.now().isAfter(expirationTime);
     }
 
-    public static boolean isWithinCooldown(LocalDateTime createdAt) {
-        LocalDateTime cooldownEnd = createdAt.plusMinutes(ConfigurationConstants.TOKEN_REQUEST_COOLDOWN_MINUTES);
-        return LocalDateTime.now().isBefore(cooldownEnd);
-    }
-
     private ResetTokenValidator() {
         throw new AssertionError("Clase utilitaria, no debe ser instanciada");
     }

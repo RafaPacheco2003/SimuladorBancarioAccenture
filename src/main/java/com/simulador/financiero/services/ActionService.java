@@ -7,6 +7,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.simulador.financiero.Exceptions.BadRequestException;
 import com.simulador.financiero.Exceptions.InsufficientBalanceException;
 import com.simulador.financiero.Exceptions.ResourceNotFoundException;
 import com.simulador.financiero.entities.AccountEntity;
@@ -44,7 +45,7 @@ public class ActionService {
                         String accountNumber) {
 
                 if (quantity == null || quantity <= 0) {
-                        throw new IllegalArgumentException(
+                        throw new BadRequestException(
                                         "The quantity must be greater than 0.");
                 }
 
