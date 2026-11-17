@@ -14,13 +14,13 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import com.simulador.financiero.DTOs.response.ErrorDetail;
-import com.simulador.financiero.Exceptions.BadRequestException;
-import com.simulador.financiero.Exceptions.DuplicateResourceException;
-import com.simulador.financiero.Exceptions.ForbiddenException;
-import com.simulador.financiero.Exceptions.InsufficientBalanceException;
-import com.simulador.financiero.Exceptions.RequestDenied;
-import com.simulador.financiero.Exceptions.ResourceNotFoundException;
+import com.simulador.financiero.dtos.response.ErrorDetail;
+import com.simulador.financiero.exceptions.BadRequestException;
+import com.simulador.financiero.exceptions.DuplicateResourceException;
+import com.simulador.financiero.exceptions.ForbiddenException;
+import com.simulador.financiero.exceptions.InsufficientBalanceException;
+import com.simulador.financiero.exceptions.RequestDenied;
+import com.simulador.financiero.exceptions.ResourceNotFoundException;
 import com.simulador.financiero.constants.ExceptionMessageConstants;
 
 import jakarta.servlet.http.HttpServletRequest;

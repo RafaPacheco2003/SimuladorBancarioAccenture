@@ -7,11 +7,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.simulador.financiero.DTOs.response.ActivePositionResponse;
-import com.simulador.financiero.DTOs.response.ErrorDetail;
+import com.simulador.financiero.dtos.response.ActivePositionResponse;
+import com.simulador.financiero.dtos.response.ErrorDetail;
 import com.simulador.financiero.config.security.AuthenticatedUser;
 import com.simulador.financiero.services.IPortfolioService;
-import com.simulador.financiero.utils.AuthenticatedUserProvider;
+import com.simulador.financiero.config.security.AuthenticatedUserProvider;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;

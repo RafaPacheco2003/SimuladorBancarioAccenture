@@ -5,7 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.simulador.financiero.DTOs.response.ActivePositionResponse;
+import com.simulador.financiero.dtos.response.ActivePositionResponse;
 import com.simulador.financiero.entities.AccountEntity;
 import com.simulador.financiero.mappers.PortfolioMapper;
 import com.simulador.financiero.repositories.ActionRepository;

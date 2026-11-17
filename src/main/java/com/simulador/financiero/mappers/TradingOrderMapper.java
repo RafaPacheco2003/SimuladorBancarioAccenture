@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 
 import org.springframework.stereotype.Component;
 
-import com.simulador.financiero.DTOs.response.TradingOrderResponse;
+import com.simulador.financiero.dtos.response.TradingOrderResponse;
 import com.simulador.financiero.entities.AccountEntity;
 import com.simulador.financiero.entities.StocksEntity;
 import com.simulador.financiero.entities.TradingOrdersEntity;

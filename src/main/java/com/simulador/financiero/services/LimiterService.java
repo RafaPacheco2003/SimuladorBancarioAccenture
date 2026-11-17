@@ -2,7 +2,7 @@ package com.simulador.financiero.services;
 
 import org.springframework.stereotype.Service;
 
-import com.simulador.financiero.Exceptions.RequestDenied;
+import com.simulador.financiero.exceptions.RequestDenied;
 import com.simulador.financiero.constants.ExceptionMessageConstants;
 import com.simulador.financiero.controllers.GlobalExceptionHandler;
 

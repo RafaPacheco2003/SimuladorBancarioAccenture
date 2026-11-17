@@ -13,9 +13,9 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
-import com.simulador.financiero.DTOs.response.StockResponse;
+import com.simulador.financiero.dtos.response.StockResponse;
 import com.simulador.financiero.services.IStockService;
-import com.simulador.financiero.DTOs.response.ErrorDetail;
+import com.simulador.financiero.dtos.response.ErrorDetail;
 
 import lombok.AllArgsConstructor;
 

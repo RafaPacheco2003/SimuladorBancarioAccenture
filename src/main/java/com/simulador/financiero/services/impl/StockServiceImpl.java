@@ -1,8 +1,8 @@
 package com.simulador.financiero.services.impl;
 
 import com.simulador.financiero.services.IStockService;
-import com.simulador.financiero.DTOs.response.StockResponse;
-import com.simulador.financiero.repositories.StockRespository;
+import com.simulador.financiero.dtos.response.StockResponse;
+import com.simulador.financiero.repositories.StockRepository;
 
 import java.util.List;
 
@@ -12,10 +12,10 @@ import org.springframework.stereotype.Service;
 @Service
 public class StockServiceImpl implements IStockService {
 
-    private final StockRespository stockRepository;
+    private final StockRepository stockRepository;
 
     @Autowired
-    public StockServiceImpl(StockRespository stockRepository) {
+    public StockServiceImpl(StockRepository stockRepository) {
         this.stockRepository = stockRepository;
     }
 

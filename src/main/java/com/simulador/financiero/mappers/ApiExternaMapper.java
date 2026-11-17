@@ -6,8 +6,8 @@ import java.time.format.DateTimeFormatter;
 
 import org.springframework.stereotype.Component;
 
-import com.simulador.financiero.DTOs.external.GlobalQuoteDTO;
-import com.simulador.financiero.DTOs.response.StockResponse;
+import com.simulador.financiero.dtos.external.GlobalQuoteDTO;
+import com.simulador.financiero.dtos.response.StockResponse;
 import com.simulador.financiero.entities.StocksEntity;
 
 @Component

@@ -2,6 +2,7 @@ package com.simulador.financiero.services;
 
 import java.math.BigDecimal;
 
+import com.simulador.financiero.dtos.response.BalanceResponse;
 import com.simulador.financiero.account.AccountType;
 import com.simulador.financiero.account.Currency;
 import com.simulador.financiero.entities.AccountEntity;
@@ -15,6 +16,8 @@ public interface IAccountService {
     );
 
     AccountEntity findByNumber(String number);
+
+    BalanceResponse getBalance(Long userId, String number);
 
     void withdraw(AccountEntity account, BigDecimal amount);
 

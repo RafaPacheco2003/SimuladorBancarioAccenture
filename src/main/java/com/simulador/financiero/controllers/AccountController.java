@@ -3,13 +3,16 @@ package com.simulador.financiero.controllers;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.simulador.financiero.DTOs.request.CreateAccountRequest;
+import com.simulador.financiero.dtos.request.CreateAccountRequest;
+import com.simulador.financiero.dtos.response.BalanceResponse;
 import com.simulador.financiero.config.security.AuthenticatedUser;
 import com.simulador.financiero.entities.AccountEntity;
 import com.simulador.financiero.services.IAccountService;
-import com.simulador.financiero.utils.AuthenticatedUserProvider;
+import com.simulador.financiero.config.security.AuthenticatedUserProvider;
 import org.springframework.web.bind.annotation.RequestBody;
 import lombok.AllArgsConstructor;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 @RestController
@@ -32,6 +35,15 @@ public class AccountController {
         );
 
         return "Account successfully created and account number: " +number;
+        }
+
+        @GetMapping("/{number}/balance")
+        public BalanceResponse getBalance(@PathVariable String number) {
+
+        AuthenticatedUser authenticatedUser =
+        AuthenticatedUserProvider.getAuthenticatedUser();
+
+        return accountService.getBalance(authenticatedUser.id(), number);
         }
 
 }

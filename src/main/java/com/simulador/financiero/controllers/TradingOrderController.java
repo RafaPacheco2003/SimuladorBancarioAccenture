@@ -8,12 +8,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.simulador.financiero.DTOs.request.TradingOrderRequest;
-import com.simulador.financiero.DTOs.response.ErrorDetail;
-import com.simulador.financiero.DTOs.response.TradingOrderResponse;
+import com.simulador.financiero.dtos.request.BuyActionRequest;
+import com.simulador.financiero.dtos.request.TradingOrderRequest;
+import com.simulador.financiero.dtos.response.ErrorDetail;
+import com.simulador.financiero.dtos.response.TradingOrderResponse;
 import com.simulador.financiero.config.security.AuthenticatedUser;
 import com.simulador.financiero.services.ITradingOrderService;
-import com.simulador.financiero.utils.AuthenticatedUserProvider;
+import com.simulador.financiero.config.security.AuthenticatedUserProvider;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -31,6 +32,23 @@ import lombok.AllArgsConstructor;
 public class TradingOrderController {
 
     private final ITradingOrderService tradingOrderService;
+
+    @PostMapping("/account/{accountNumber}/actions/buy")
+    @Operation(summary = "Comprar acciones", description = "Compra una cantidad de acciones de un ticker con el saldo de una cuenta propia.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Compra realizada"),
+            @ApiResponse(responseCode = "400", description = "Datos inválidos o saldo insuficiente", content = @Content(schema = @Schema(implementation = ErrorDetail.class))),
+            @ApiResponse(responseCode = "403", description = "La cuenta no pertenece al usuario autenticado", content = @Content(schema = @Schema(implementation = ErrorDetail.class))),
+            @ApiResponse(responseCode = "404", description = "Cuenta o acción no encontrada", content = @Content(schema = @Schema(implementation = ErrorDetail.class)))
+    })
+    public String buyActions(
+            @PathVariable String accountNumber,
+            @Valid @RequestBody BuyActionRequest request) {
+
+        AuthenticatedUser authenticatedUser = AuthenticatedUserProvider.getAuthenticatedUser();
+
+        return tradingOrderService.buyActions(authenticatedUser.id(), accountNumber, request);
+    }
 
     @PostMapping("/account/{accountNumber}/actions/sell")
     @Operation(summary = "Vender acciones", description = "Vende una cantidad de acciones de un ticker de una cuenta propia y abona el monto total de la venta al saldo de la cuenta.")

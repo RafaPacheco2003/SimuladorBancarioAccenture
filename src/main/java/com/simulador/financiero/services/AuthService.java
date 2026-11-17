@@ -4,11 +4,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.simulador.financiero.Exceptions.BadRequestException;
+import com.simulador.financiero.exceptions.BadRequestException;
 import com.simulador.financiero.config.security.JwtService;
 import com.simulador.financiero.constants.ExceptionMessageConstants;
 import com.simulador.financiero.entities.UserEntity;
-import com.simulador.financiero.entities.TempTockenEntity;
+import com.simulador.financiero.entities.TempTokenEntity;
 import com.simulador.financiero.repositories.UserRepository;
 import com.simulador.financiero.repositories.TempTokenRepository;
 import com.simulador.financiero.validators.ResetTokenValidator;
@@ -20,8 +20,8 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 
-import com.simulador.financiero.DTOs.request.LoginRequest;
-import com.simulador.financiero.DTOs.response.LoginResponse;
+import com.simulador.financiero.dtos.request.LoginRequest;
+import com.simulador.financiero.dtos.response.LoginResponse;
 
 @Service
 @AllArgsConstructor
@@ -35,7 +35,7 @@ public class AuthService {
     @Transactional
     public void resetPassword(String newPassword, String temporalKey) {
 
-        TempTockenEntity tempToken = tempTokenRepository.findByToken(temporalKey)
+        TempTokenEntity tempToken = tempTokenRepository.findByToken(temporalKey)
                 .orElseThrow(() -> new BadRequestException(ExceptionMessageConstants.TOKEN_INVALID_OR_EXPIRED));
 
         if (ResetTokenValidator.isExpired(tempToken.getCreatedAt())) {

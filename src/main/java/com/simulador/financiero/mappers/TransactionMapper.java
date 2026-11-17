@@ -4,8 +4,8 @@ import java.math.BigDecimal;
 
 import org.springframework.stereotype.Component;
 
-import com.simulador.financiero.DTOs.response.ComprobanteResponse;
-import com.simulador.financiero.DTOs.response.TransactionHistResponse;
+import com.simulador.financiero.dtos.response.ComprobanteResponse;
+import com.simulador.financiero.dtos.response.TransactionHistResponse;
 import com.simulador.financiero.entities.AccountEntity;
 import com.simulador.financiero.entities.TransactionEntity;
 import com.simulador.financiero.entities.TransactionStatus;

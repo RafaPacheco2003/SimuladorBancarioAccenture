@@ -1,7 +1,7 @@
 package com.simulador.financiero.validators;
 
-import com.simulador.financiero.Exceptions.BadRequestException;
-import com.simulador.financiero.Exceptions.ForbiddenException;
+import com.simulador.financiero.exceptions.BadRequestException;
+import com.simulador.financiero.exceptions.ForbiddenException;
 import com.simulador.financiero.account.Status;
 import com.simulador.financiero.constants.ExceptionMessageConstants;
 import com.simulador.financiero.entities.AccountEntity;

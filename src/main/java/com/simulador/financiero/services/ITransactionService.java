@@ -1,10 +1,10 @@
 package com.simulador.financiero.services;
 
-import com.simulador.financiero.DTOs.request.TransactionRequest;
-import com.simulador.financiero.DTOs.request.CashMovementRequest;
-import com.simulador.financiero.DTOs.response.ComprobanteResponse;
-import com.simulador.financiero.DTOs.response.TransactionHistResponse;
-import com.simulador.financiero.DTOs.request.WithdrawalRequest;
+import com.simulador.financiero.dtos.request.TransactionRequest;
+import com.simulador.financiero.dtos.request.CashMovementRequest;
+import com.simulador.financiero.dtos.response.ComprobanteResponse;
+import com.simulador.financiero.dtos.response.TransactionHistResponse;
+import com.simulador.financiero.dtos.request.WithdrawalRequest;
 
 import java.util.List;
 

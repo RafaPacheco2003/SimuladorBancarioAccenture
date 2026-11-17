@@ -15,7 +15,7 @@ import com.simulador.financiero.entities.StocksEntity;
 class StockRepositoryTest {
 
     @Autowired
-    private StockRespository stockRepository;
+    private StockRepository stockRepository;
 
     @Test
     void shouldFindTickerIgnoringCase() {

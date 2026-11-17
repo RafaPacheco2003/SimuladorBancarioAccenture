@@ -3,7 +3,7 @@ package com.simulador.financiero.entities;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-import com.simulador.financiero.Exceptions.BadRequestException;
+import com.simulador.financiero.exceptions.BadRequestException;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
