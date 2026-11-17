@@ -2,6 +2,7 @@ package com.simulador.financiero.services;
 
 import java.math.BigDecimal;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 
@@ -11,9 +12,14 @@ import com.simulador.financiero.account.Currency;
 @Service 
 public class ConsultApiExchangeService {
         
-    RestClient restClient= RestClient.builder()
-        .baseUrl("https://api.frankfurter.dev")
-        .build();
+    private final RestClient restClient;
+
+    public ConsultApiExchangeService(
+            @Value("${app.exchange.api-base-url:https://api.frankfurter.dev}") String baseUrl) {
+        this.restClient = RestClient.builder()
+            .baseUrl(baseUrl)
+            .build();
+    }
 
 
     public BigDecimal consultarApi(Currency from, Currency to){

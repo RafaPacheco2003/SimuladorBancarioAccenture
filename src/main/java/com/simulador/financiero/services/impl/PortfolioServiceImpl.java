@@ -36,6 +36,7 @@ public class PortfolioServiceImpl implements IPortfolioService {
         AccountValidator.validateOwnership(account, userId);
 
         return actionRepository.findByAccount(account).stream()
+                .filter(action -> action.getQuantity() != null && action.getQuantity() > 0)
                 .map(portfolioMapper::toPosition)
                 .toList();
     }

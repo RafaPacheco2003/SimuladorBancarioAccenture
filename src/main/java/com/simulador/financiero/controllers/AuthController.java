@@ -21,6 +21,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -34,12 +35,15 @@ import org.springframework.http.ResponseEntity;
 @RequestMapping("/api/v1/auth")
 @AllArgsConstructor
 @Tag(name = "Auth", description = "Autenticación y recuperación de cuenta")
+@SecurityRequirements
 public class AuthController {
     private final AuthService authService;
     private final IUserService userService;
     private final TempKeyService tempKeyService;
 
     @PostMapping("/register")
+    @Operation(summary = "Registrar un usuario", description = "Crea un usuario nuevo con sus datos personales y su contraseña.")
+    @ApiResponse(responseCode = "201", description = "Usuario registrado", content = @Content(schema = @Schema(implementation = UserResponse.class)))
     public ResponseEntity<UserResponse> createUser(
         @Valid @RequestBody CreateUserRequest request) {
 
@@ -61,6 +65,8 @@ public class AuthController {
     }
 
     @PostMapping("/forgot-password")
+    @Operation(summary = "Solicitar recuperación de contraseña", description = "Envía una clave temporal al email del usuario para poder restablecer su contraseña.")
+    @ApiResponse(responseCode = "200", description = "Clave temporal enviada", content = @Content(mediaType = "text/plain", schema = @Schema(type = "string", example = "Token enviado correctamente")))
     public ResponseEntity<String> forgotPassword(
             @Valid @RequestBody TempKeyRequest request) {
 

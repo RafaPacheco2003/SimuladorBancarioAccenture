@@ -8,8 +8,15 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 @RestController
 @RequestMapping("/api/v1/batch")
+@Tag(name = "Batch-controller", description = "Ejecución de procesos batch")
 public class BatchController {
 
     private final JobLauncher jobLauncher;
@@ -21,6 +28,8 @@ public class BatchController {
     }
 
     @PostMapping("/quotes")
+    @Operation(summary = "Ejecutar job de cotizaciones", description = "Lanza el job batch que actualiza las cotizaciones diarias de las acciones.")
+    @ApiResponse(responseCode = "200", description = "Job iniciado", content = @Content(mediaType = "text/plain", schema = @Schema(type = "string", example = "Job iniciado")))
     public String runJob() throws Exception {
 
         JobParameters parameters = new JobParametersBuilder()

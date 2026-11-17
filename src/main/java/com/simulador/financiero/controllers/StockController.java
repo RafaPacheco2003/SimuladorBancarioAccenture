@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -32,7 +33,7 @@ public class StockController {
     @GetMapping("/consulta")
     @Operation(summary = "Consulta de Acciones", description = "Obtiene la lista de todas las acciones.")
     @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "Consulta exitosa", content = @Content(mediaType = "application/json", schema = @Schema(implementation = StockResponse.class))),
+        @ApiResponse(responseCode = "200", description = "Consulta exitosa", content = @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = StockResponse.class)))),
         @ApiResponse(responseCode = "401", description = "El endpoint requiere autenticación.", content = @Content(schema = @Schema(implementation = ErrorDetail.class)))
     })
     public ResponseEntity<List<StockResponse>> consultaAcciones(){
