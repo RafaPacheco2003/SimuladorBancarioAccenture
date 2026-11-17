@@ -62,7 +62,9 @@ public class TransactionController {
 
         @GetMapping("/{numeroCuenta}")
         public List<TransactionHistResponse> getTransactionHistory(@PathVariable String numeroCuenta) {
-                return transactionService.getTransactionsHistory(numeroCuenta);
+                AuthenticatedUser authenticatedUser = AuthenticatedUserProvider.getAuthenticatedUser();
+
+                return transactionService.getTransactionsHistory(authenticatedUser.id(), numeroCuenta);
         }
 
         @PostMapping("/deposits")

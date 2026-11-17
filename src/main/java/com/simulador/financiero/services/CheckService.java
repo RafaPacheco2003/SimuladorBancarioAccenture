@@ -8,6 +8,7 @@ import com.simulador.financiero.DTOs.response.CheckResponse;
 import com.simulador.financiero.Exceptions.ResourceNotFoundException;
 import com.simulador.financiero.entities.AccountEntity;
 import com.simulador.financiero.repositories.CheckRepository;
+import com.simulador.financiero.validators.AccountValidator;
 
 
 @Service 
@@ -18,9 +19,10 @@ public class CheckService {
         this.checkRepo = checkRepo;
     }
 
-    public CheckResponse getAccountBalance(String number)
+    public CheckResponse getAccountBalance(Long userId, String number)
     {
         AccountEntity entity=checkRepo.findById(number).orElseThrow(()-> new ResourceNotFoundException("Account not found"));
+        AccountValidator.validateOwnership(entity, userId);
         return new CheckResponse(
             entity.getNumber(),
             entity.getCurrency(),

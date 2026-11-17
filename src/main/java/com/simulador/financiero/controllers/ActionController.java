@@ -8,9 +8,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.simulador.financiero.config.security.AuthenticatedUser;
 import com.simulador.financiero.entities.ActionEntity;
 import com.simulador.financiero.repositories.ActionRepository;
 import com.simulador.financiero.services.ActionService;
+import com.simulador.financiero.utils.AuthenticatedUserProvider;
 
 import lombok.AllArgsConstructor;
 
@@ -25,7 +27,9 @@ public class ActionController {
     @PostMapping("/buy")
     public String buyAction(@RequestParam String ticker,@RequestParam Integer quantity,@RequestParam String accountNumber) {
 
-        return actionService.buyAction(ticker,quantity,accountNumber);
+        AuthenticatedUser authenticatedUser = AuthenticatedUserProvider.getAuthenticatedUser();
+
+        return actionService.buyAction(authenticatedUser.id(), ticker, quantity, accountNumber);
     }
 
 }

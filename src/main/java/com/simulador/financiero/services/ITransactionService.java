@@ -14,7 +14,7 @@ public interface ITransactionService {
 
   public ComprobanteResponse performDeposit(Long userId, CashMovementRequest request);
 
-  List<TransactionHistResponse> getTransactionsHistory(String accountNumber);
+  List<TransactionHistResponse> getTransactionsHistory(Long userId, String accountNumber);
 
   public ComprobanteResponse performWithdrawal(Long userId, WithdrawalRequest request);
 

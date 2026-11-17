@@ -110,7 +110,10 @@ public class TransactionServiceImpl implements ITransactionService {
                
         @Override
         @Transactional(readOnly = true)
-        public List<TransactionHistResponse> getTransactionsHistory(String accountNumber) {
+        public List<TransactionHistResponse> getTransactionsHistory(Long userId, String accountNumber) {
+                AccountEntity account = accountService.findByNumber(accountNumber);
+                AccountValidator.validateOwnership(account, userId);
+
                 return transactionRepository.findByOriginAccount_Number(accountNumber)
                                 .stream()
                                 .map(transactionMapper::toTransactionHist)

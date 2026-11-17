@@ -17,6 +17,7 @@ import com.simulador.financiero.repositories.AccountRepository;
 import com.simulador.financiero.repositories.ActionRepository;
 import com.simulador.financiero.repositories.StockRespository;
 import com.simulador.financiero.account.Currency;
+import com.simulador.financiero.validators.AccountValidator;
 
 @Service
 public class ActionService {
@@ -40,6 +41,7 @@ public class ActionService {
 
         @Transactional
         public String buyAction(
+                        Long userId,
                         String ticker,
                         Integer quantity,
                         String accountNumber) {
@@ -56,6 +58,8 @@ public class ActionService {
                 AccountEntity account = accountRepository
                                 .findById(accountNumber)
                                 .orElseThrow(() -> new ResourceNotFoundException("Account not found"));
+
+                AccountValidator.validateOwnership(account, userId);
 
                 BigDecimal currentPrice = stock.getCurrentPrice();
                 

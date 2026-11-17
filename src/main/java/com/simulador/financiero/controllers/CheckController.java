@@ -5,7 +5,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.simulador.financiero.DTOs.response.CheckResponse;
+import com.simulador.financiero.config.security.AuthenticatedUser;
 import com.simulador.financiero.services.CheckService;
+import com.simulador.financiero.utils.AuthenticatedUserProvider;
 
 @RestController
 public class CheckController {
@@ -18,6 +20,8 @@ public class CheckController {
     @GetMapping("/api/v1/cuentas/{numeroCuenta}/saldo")
     public CheckResponse getBalance(@PathVariable String numeroCuenta){
 
-        return checkService.getAccountBalance(numeroCuenta);
+        AuthenticatedUser authenticatedUser = AuthenticatedUserProvider.getAuthenticatedUser();
+
+        return checkService.getAccountBalance(authenticatedUser.id(), numeroCuenta);
     }
 }
