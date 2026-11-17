@@ -13,6 +13,7 @@ import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import com.simulador.financiero.dtos.response.ErrorDetail;
 import com.simulador.financiero.exceptions.BadRequestException;
@@ -41,6 +42,22 @@ public class GlobalExceptionHandler {
                 404,
                 "Not Found",
                 ex.getMessage(),
+                request.getRequestURI());
+
+        return ResponseEntity.status(404).body(errorDetail);
+    }
+
+    // Unmapped routes: without this handler they fall into the generic 500 handler.
+    @ExceptionHandler(NoResourceFoundException.class)
+    public ResponseEntity<ErrorDetail> handleNoResourceFound(
+            NoResourceFoundException ex,
+            HttpServletRequest request) {
+
+        ErrorDetail errorDetail = new ErrorDetail(
+                LocalDateTime.now(),
+                404,
+                "Not Found",
+                "Ruta no encontrada.",
                 request.getRequestURI());
 
         return ResponseEntity.status(404).body(errorDetail);

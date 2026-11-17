@@ -14,6 +14,8 @@ import com.simulador.financiero.services.IPortfolioService;
 import com.simulador.financiero.config.security.AuthenticatedUserProvider;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -32,11 +34,12 @@ public class PortfolioController {
     @GetMapping("/{numeroCuenta}/portafolio")
     @Operation(summary = "Consultar posiciones activas de una cuenta", description = "Retorna cada posición activa de la cuenta con su ganancia/pérdida respecto al precio actual.")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Lista de posiciones (vacía si no hay posiciones)"),
+            @ApiResponse(responseCode = "200", description = "Lista de posiciones (vacía si no hay posiciones)", content = @Content(array = @ArraySchema(schema = @Schema(implementation = ActivePositionResponse.class)))),
             @ApiResponse(responseCode = "403", description = "La cuenta no pertenece al usuario autenticado", content = @Content(schema = @Schema(implementation = ErrorDetail.class))),
             @ApiResponse(responseCode = "404", description = "Cuenta no encontrada", content = @Content(schema = @Schema(implementation = ErrorDetail.class)))
     })
-    public List<ActivePositionResponse> getActivePositions(@PathVariable String numeroCuenta) {
+    public List<ActivePositionResponse> getActivePositions(
+            @Parameter(description = "Número de cuenta de 16 dígitos", example = "1234567890123456") @PathVariable String numeroCuenta) {
         AuthenticatedUser authenticatedUser = AuthenticatedUserProvider.getAuthenticatedUser();
         return portfolioService.getActivePositions(authenticatedUser.id(), numeroCuenta);
     }

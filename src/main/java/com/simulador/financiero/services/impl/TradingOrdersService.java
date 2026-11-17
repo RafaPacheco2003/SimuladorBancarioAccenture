@@ -2,6 +2,7 @@ package com.simulador.financiero.services.impl;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDateTime;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -55,7 +56,7 @@ public class TradingOrdersService implements ITradingOrderService {
 
     @Override
     @Transactional
-    public String buyActions(Long userId, String accountNumber, BuyActionRequest request) {
+    public TradingOrderResponse buyActions(Long userId, String accountNumber, BuyActionRequest request) {
 
         StocksEntity stock = getStock(request.ticker());
         AccountEntity account = accountService.findByNumber(accountNumber);
@@ -96,7 +97,15 @@ public class TradingOrdersService implements ITradingOrderService {
 
         actionRepository.save(action);
 
-        return "Purchase successful";
+        // No TradingOrdersEntity is persisted: it has no BUY/SELL side yet, so a buy row
+        // would be indistinguishable from a sell. Build the same response directly.
+        return new TradingOrderResponse(
+                stock.getTicker(),
+                quantity,
+                currentPrice,
+                calculateTotal(currentPrice, quantity),
+                account.getBalance(),
+                LocalDateTime.now());
     }
 
     @Override
