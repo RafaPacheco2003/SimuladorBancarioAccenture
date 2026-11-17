@@ -26,6 +26,8 @@ services:
       MAIL_PASSWORD: ${MAIL_PASSWORD:-}
       MAIL_SMTP_AUTH: ${MAIL_SMTP_AUTH:-false}
       MAIL_SMTP_STARTTLS: ${MAIL_SMTP_STARTTLS:-false}
+      # Loads idempotent demo users/accounts/stocks when true (see .env.example).
+      SEED_DEMO_DATA: ${SEED_DEMO_DATA:-false}
     volumes:
       - .:/app
       - maven_repo:/root/.m2
