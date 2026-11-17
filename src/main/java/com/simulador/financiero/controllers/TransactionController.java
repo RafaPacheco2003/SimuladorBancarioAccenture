@@ -24,6 +24,8 @@ import com.simulador.financiero.services.ITransactionService;
 import com.simulador.financiero.config.security.AuthenticatedUserProvider;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -61,7 +63,10 @@ public class TransactionController {
         }
 
         @GetMapping("/{numeroCuenta}")
-        public List<TransactionHistResponse> getTransactionHistory(@PathVariable String numeroCuenta) {
+        @Operation(summary = "Consultar historial de transacciones", description = "Retorna las transacciones (transferencias, depósitos y retiros) de una cuenta propia del usuario autenticado.")
+        @ApiResponse(responseCode = "200", description = "Historial de transacciones (vacío si no hay movimientos)", content = @Content(array = @ArraySchema(schema = @Schema(implementation = TransactionHistResponse.class))))
+        public List<TransactionHistResponse> getTransactionHistory(
+                        @Parameter(description = "Número de cuenta de 16 dígitos", example = "1234567890123456") @PathVariable String numeroCuenta) {
                 AuthenticatedUser authenticatedUser = AuthenticatedUserProvider.getAuthenticatedUser();
 
                 return transactionService.getTransactionsHistory(authenticatedUser.id(), numeroCuenta);

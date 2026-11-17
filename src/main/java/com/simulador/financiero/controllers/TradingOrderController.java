@@ -17,6 +17,7 @@ import com.simulador.financiero.services.ITradingOrderService;
 import com.simulador.financiero.config.security.AuthenticatedUserProvider;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -36,18 +37,21 @@ public class TradingOrderController {
     @PostMapping("/account/{accountNumber}/actions/buy")
     @Operation(summary = "Comprar acciones", description = "Compra una cantidad de acciones de un ticker con el saldo de una cuenta propia.")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Compra realizada"),
+            @ApiResponse(responseCode = "201", description = "Compra realizada", content = @Content(schema = @Schema(implementation = TradingOrderResponse.class))),
             @ApiResponse(responseCode = "400", description = "Datos inválidos o saldo insuficiente", content = @Content(schema = @Schema(implementation = ErrorDetail.class))),
             @ApiResponse(responseCode = "403", description = "La cuenta no pertenece al usuario autenticado", content = @Content(schema = @Schema(implementation = ErrorDetail.class))),
             @ApiResponse(responseCode = "404", description = "Cuenta o acción no encontrada", content = @Content(schema = @Schema(implementation = ErrorDetail.class)))
     })
-    public String buyActions(
-            @PathVariable String accountNumber,
+    public ResponseEntity<TradingOrderResponse> buyActions(
+            @Parameter(description = "Número de cuenta de 16 dígitos", example = "1234567890123456") @PathVariable String accountNumber,
             @Valid @RequestBody BuyActionRequest request) {
 
         AuthenticatedUser authenticatedUser = AuthenticatedUserProvider.getAuthenticatedUser();
 
-        return tradingOrderService.buyActions(authenticatedUser.id(), accountNumber, request);
+        TradingOrderResponse response = tradingOrderService.buyActions(
+                authenticatedUser.id(), accountNumber, request);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @PostMapping("/account/{accountNumber}/actions/sell")
@@ -59,7 +63,7 @@ public class TradingOrderController {
             @ApiResponse(responseCode = "404", description = "Cuenta o acción no encontrada", content = @Content(schema = @Schema(implementation = ErrorDetail.class)))
     })
     public ResponseEntity<TradingOrderResponse> sellActions(
-            @PathVariable String accountNumber,
+            @Parameter(description = "Número de cuenta de 16 dígitos", example = "1234567890123456") @PathVariable String accountNumber,
             @Valid @RequestBody TradingOrderRequest request) {
 
         AuthenticatedUser authenticatedUser = AuthenticatedUserProvider.getAuthenticatedUser();

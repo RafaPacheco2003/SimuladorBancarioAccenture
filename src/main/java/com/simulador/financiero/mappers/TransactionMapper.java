@@ -52,19 +52,28 @@ public class TransactionMapper {
     public ComprobanteResponse toComprobante(TransactionEntity entity) {
         return new ComprobanteResponse(
                 entity.getId(),
-                entity.getOriginAccount().getNumber(),
-                entity.getDestinationAccount().getNumber(),
+                numberOf(entity.getOriginAccount()),
+                numberOf(entity.getDestinationAccount()),
                 entity.getOriginalAmount(),
-                entity.getStatus());
+                entity.getStatus(),
+                entity.getConcept(),
+                entity.getDate());
     }
 
     public TransactionHistResponse toTransactionHist(TransactionEntity entity) {
         return new TransactionHistResponse(
-                entity.getOriginAccount().getNumber(),
-                entity.getDestinationAccount().getNumber(),
+                entity.getId(),
+                numberOf(entity.getOriginAccount()),
+                numberOf(entity.getDestinationAccount()),
                 entity.getOriginalAmount(),
                 entity.getStatus(),
+                entity.getConcept(),
+                entity.getDate(),
                 entity.getDate());
+    }
+
+    private String numberOf(AccountEntity account) {
+        return account != null ? account.getNumber() : null;
     }
 
     public TransactionEntity toWithdrawal(AccountEntity account, BigDecimal amount, String concept) {

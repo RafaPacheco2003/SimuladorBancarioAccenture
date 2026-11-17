@@ -114,7 +114,7 @@ public class TransactionServiceImpl implements ITransactionService {
                 AccountEntity account = accountService.findByNumber(accountNumber);
                 AccountValidator.validateOwnership(account, userId);
 
-                return transactionRepository.findByOriginAccount_Number(accountNumber)
+                return transactionRepository.findHistoryByAccountNumber(accountNumber)
                                 .stream()
                                 .map(transactionMapper::toTransactionHist)
                                 .collect(Collectors.toList());
